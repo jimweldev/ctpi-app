@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const privateInstance = axios.create({
-  baseURL: "https://jsonplaceholder.typicode.com",
+  baseURL: import.meta.env.VITE_API,
   headers: {
     Accept: "application/json",
   },

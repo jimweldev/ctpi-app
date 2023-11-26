@@ -92,7 +92,7 @@ class _SermonListState extends State<SermonList> {
                       ListTile(
                         title: Text(
                           sermon.title,
-                          maxLines: 1,
+                          maxLines: 2,
                           overflow: TextOverflow.ellipsis,
                         ),
                         subtitle: Row(

@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
-import axios from "axios";
+import privateInstance from "./interceptors/privateInstance";
 
 const App = () => {
   useEffect(() => {
-    axios
-      .get("https://jsonplaceholder.typicode.com/todos/1")
+    privateInstance
+      .get("/todos/1")
       .then(function (response) {
         // handle success
         console.log(response);

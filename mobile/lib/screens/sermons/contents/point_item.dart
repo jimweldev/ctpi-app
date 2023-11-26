@@ -43,7 +43,7 @@ class _PointItemState extends State<PointItem> {
         point = response.data;
       });
     } catch (e) {
-      print('Error fetching sermon data: $e');
+      // print('Error fetching sermon data: $e');
     }
   }
 
@@ -60,7 +60,7 @@ class _PointItemState extends State<PointItem> {
         verses = List<Map<String, dynamic>>.from(response.data['records']);
       });
     } catch (e) {
-      print('Error fetching sermon data: $e');
+      // print('Error fetching sermon data: $e');
     }
   }
 

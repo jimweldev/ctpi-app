@@ -1,8 +1,8 @@
-const bcrypt = require("bcrypt");
-const validator = require("validator");
-const jwt = require("jsonwebtoken");
+const bcrypt = require('bcrypt');
+const validator = require('validator');
+const jwt = require('jsonwebtoken');
 
-const User = require("../models/userModel");
+const User = require('../models/userModel');
 
 const generateAccessToken = (_id) => {
   return jwt.sign({ _id: _id }, process.env.ACCESS_TOKEN_SECRET, {
@@ -23,19 +23,21 @@ const login = async (req, res) => {
   if (!emailAddress || !password) {
     return res
       .status(400)
-      .json({ error: "Please fill all the required fields" });
+      .json({ error: 'Please fill all the required fields' });
   }
 
-  const user = await User.findOne({ emailAddress });
+  let user = await User.findOne({ emailAddress });
 
   if (!user) {
-    return res.status(400).json({ error: "Incorrect email address" });
+    return res.status(400).json({ error: 'Incorrect email address' });
   }
 
   const isPasswordMatched = await bcrypt.compare(password, user.password);
 
+  user = await User.findOne({ emailAddress }).select('-password');
+
   if (!isPasswordMatched) {
-    return res.status(400).json({ error: "Incorrect password" });
+    return res.status(400).json({ error: 'Incorrect password' });
   }
 
   // generate access token
@@ -43,10 +45,10 @@ const login = async (req, res) => {
   const refreshToken = generateRefreshToken(user._id);
 
   res
-    .cookie("refreshToken", refreshToken, {
+    .cookie('refreshToken', refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: "None",
+      sameSite: 'None',
     })
     .status(200)
     .json({ user, accessToken });
@@ -59,17 +61,17 @@ const register = async (req, res) => {
   if (!emailAddress || !password || !confirmPassword) {
     return res
       .status(400)
-      .json({ error: "Please fill all the required fields" });
+      .json({ error: 'Please fill all the required fields' });
   }
 
   const isEmailAddressUsed = await User.findOne({ emailAddress });
 
   if (isEmailAddressUsed) {
-    return res.status(400).json({ error: "Email already used" });
+    return res.status(400).json({ error: 'Email already used' });
   }
 
   if (!validator.isEmail(emailAddress)) {
-    return res.status(400).json({ error: "Email is invalid" });
+    return res.status(400).json({ error: 'Email is invalid' });
   }
 
   // prettier-ignore
@@ -84,7 +86,7 @@ const register = async (req, res) => {
   }
 
   if (password !== confirmPassword) {
-    return res.status(400).json({ error: "Passwords mismatch" });
+    return res.status(400).json({ error: 'Passwords mismatch' });
   }
 
   const salt = await bcrypt.genSalt(10);
@@ -92,17 +94,22 @@ const register = async (req, res) => {
 
   // try to create
   try {
-    const user = await User.create({ emailAddress, password: hashedPassword });
+    let user = await User.create({
+      emailAddress,
+      password: hashedPassword,
+    });
+
+    user = await User.findOne({ emailAddress }).select('-password');
 
     // generate access token
     const accessToken = generateAccessToken(user._id);
     const refreshToken = generateRefreshToken(user._id);
 
     res
-      .cookie("refreshToken", refreshToken, {
+      .cookie('refreshToken', refreshToken, {
         httpOnly: true,
         secure: true,
-        sameSite: "lax",
+        sameSite: 'lax',
       })
       .status(201)
       .json({ user, accessToken });
@@ -116,7 +123,7 @@ const refresh = async (req, res) => {
   let { refreshToken } = req.cookies;
 
   if (!refreshToken) {
-    return res.status(204).json({ error: "Refresh token required" });
+    return res.status(204).json({ error: 'Refresh token required' });
   }
 
   try {
@@ -130,27 +137,27 @@ const refresh = async (req, res) => {
     const accessToken = generateAccessToken(user._id);
 
     res
-      .cookie("refreshToken", refreshToken, {
+      .cookie('refreshToken', refreshToken, {
         httpOnly: true,
         secure: true,
-        sameSite: "None",
+        sameSite: 'None',
       })
       .status(200)
       .json({ user, accessToken });
   } catch (error) {
     return res
-      .clearCookie("refreshToken")
+      .clearCookie('refreshToken')
       .status(204)
-      .json({ error: "Refresh token required" });
+      .json({ error: 'Refresh token required' });
   }
 };
 
 // Logout
 const logout = async (req, res) => {
   res
-    .clearCookie("refreshToken")
+    .clearCookie('refreshToken')
     .status(200)
-    .json({ message: "Successfully logged out" });
+    .json({ message: 'Successfully logged out' });
 };
 
 module.exports = {

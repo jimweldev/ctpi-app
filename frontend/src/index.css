@@ -1,0 +1,74 @@
+.sidebar,
+.sidebar-content {
+  height: 100vh;
+  position: sticky;
+  top: 0;
+  overflow-y: auto;
+}
+
+.sidebar-link.active {
+  background: linear-gradient(
+    90deg,
+    rgba(59, 125, 221, 0.1),
+    rgba(59, 125, 221, 0.088) 50%,
+    transparent
+  );
+  border-left-color: #3b7ddd;
+  color: #e9ecef;
+}
+
+.sidebar-link.active:hover i,
+.sidebar-link.active:hover svg,
+.sidebar-link.active i,
+.sidebar-link.active svg {
+  color: #e9ecef;
+}
+
+.dropdown-menu {
+  margin: 0 !important;
+}
+
+@media only screen and (max-width: 575px) {
+  .dropdown-menu-lg {
+    min-width: calc(100% - 20px) !important;
+    right: 10px !important;
+  }
+}
+
+.form-control.invalid {
+  border-color: #dc3545;
+}
+.form-control.invalid:focus {
+  border-color: #dc3545;
+  box-shadow: 0 0 0 0.25rem rgba(220, 53, 69, 0.25);
+}
+
+.modal-backdrop.show {
+  display: none;
+}
+
+.modal.show {
+  background-color: rgba(0, 0, 0, 0.5);
+}
+
+.ql-editor {
+  min-height: 200px;
+}
+
+.d-flex-between-center {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.d-flex-between-end {
+  display: flex;
+  justify-content: space-between;
+  align-items: end;
+}
+
+.d-flex-end-center {
+  display: flex;
+  justify-content: end;
+  align-items: center;
+}

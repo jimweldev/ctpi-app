@@ -3,8 +3,9 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
-  BookmarkIcon,
   BookOpenIcon,
+  BrainIcon,
+  HeartIcon,
   HouseIcon,
   SettingsIcon,
 } from "lucide-react"
@@ -13,7 +14,8 @@ import { cn } from "cn"
 const tabs = [
   { href: "/", label: "Home", icon: HouseIcon },
   { href: "/sermons", label: "Sermons", icon: BookOpenIcon },
-  { href: "/memory-verses", label: "Memory Verses", icon: BookmarkIcon },
+  { href: "/memory-verses", label: "Memory", icon: BrainIcon },
+  { href: "/heart-check", label: "Heart Check", icon: HeartIcon },
   { href: "/settings", label: "Settings", icon: SettingsIcon },
 ]
 
@@ -22,7 +24,7 @@ function BottomNav() {
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 border-t bg-card/85 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl">
-      <ul className="mx-auto grid h-16 max-w-2xl grid-cols-4">
+      <ul className="mx-auto grid h-16 max-w-2xl grid-cols-5">
         {tabs.map(({ href, label, icon: Icon }) => {
           const active =
             href === "/" ? pathname === "/" : pathname.startsWith(href)

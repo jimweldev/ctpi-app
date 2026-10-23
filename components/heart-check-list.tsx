@@ -1,9 +1,12 @@
 "use client"
 
 import * as React from "react"
+import Link from "next/link"
 import {
-  CalendarClockIcon,
+  AlarmClockIcon,
+  ChevronRightIcon,
   HeartIcon,
+  PencilIcon,
   PlusIcon,
   Trash2Icon,
 } from "lucide-react"
@@ -26,54 +29,108 @@ import {
   EmptyMedia,
   EmptyTitle,
 } from "@/components/ui/empty"
-import {
-  Field,
-  FieldDescription,
-  FieldGroup,
-  FieldLabel,
-} from "@/components/ui/field"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
 import {
+  useHeartCheckAlarms,
+  formatDay,
+  toDateKey,
+  useNow,
+  wentOffToday,
+} from "@/lib/heart-check-alarms"
+import {
   addHeartCheck,
-  formatHeartCheckDate,
+  getHeartLevel,
+  HEART_LEVELS,
   type HeartCheck,
-  MAX_RATING,
-  rateHeartCheck,
+  type HeartLevel,
   removeHeartCheck,
+  updateHeartCheck,
   useHeartChecks,
 } from "@/lib/heart-checks"
 
 function HeartCheckList() {
   const checks = useHeartChecks()
+  const alarms = useHeartCheckAlarms()
+  const now = useNow()
   const [adding, setAdding] = React.useState(false)
+  // Changing the key resets the form for each open.
+  const [form, setForm] = React.useState<{
+    key: number
+    today: string
+    check?: HeartCheck
+  }>({ key: 0, today: "" })
+  const [viewing, setViewing] = React.useState<HeartCheck | null>(null)
+  const [viewerOpen, setViewerOpen] = React.useState(false)
 
-  // Unrated checks are still to do (soonest first); rated ones are done
-  // (most recent first).
-  const upcoming = checks
-    .filter((check) => check.rating === undefined)
-    .sort((a, b) => a.scheduledAt.localeCompare(b.scheduledAt))
-  const done = checks
-    .filter((check) => check.rating !== undefined)
-    .sort((a, b) => b.scheduledAt.localeCompare(a.scheduledAt))
+  /** Open the form to add a heart check, or to edit `check`. */
+  function openForm(check?: HeartCheck) {
+    setForm((current) => ({
+      key: current.key + 1,
+      today: toDateKey(new Date()),
+      check,
+    }))
+    setAdding(true)
+  }
+
+  // An alarm went off today and no heart check has been done since.
+  const lastAlarm =
+    now === null
+      ? null
+      : alarms
+          .map((alarm) => wentOffToday(alarm, now))
+          .filter((date) => date !== null)
+          .sort((a, b) => b.getTime() - a.getTime())
+          .at(0)
+  const due =
+    lastAlarm != null &&
+    !checks.some((check) => check.createdAt >= lastAlarm.getTime())
 
   return (
     <>
       <PageHeader
         title="Heart Check"
-        back={{ href: "/", label: "Home" }}
         action={
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Schedule heart check"
-            onClick={() => setAdding(true)}
-          >
-            <PlusIcon className="size-6 text-primary" />
-          </Button>
+          <div className="flex">
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Alarms"
+              nativeButton={false}
+              render={<Link href="/heart-check/alarms" />}
+            >
+              <AlarmClockIcon className="size-5 text-primary" />
+            </Button>
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Add heart check"
+              onClick={() => openForm()}
+            >
+              <PlusIcon className="size-6 text-primary" />
+            </Button>
+          </div>
         }
       />
-      <main className="mx-auto flex w-full max-w-2xl flex-col gap-8 px-4 py-6">
+      <main className="mx-auto flex w-full max-w-2xl flex-col gap-3 px-4 py-6">
+        {due && (
+          <button
+            type="button"
+            onClick={() => openForm()}
+            className="flex items-center gap-4 rounded-3xl bg-hero p-5 text-left text-hero-foreground shadow-lg transition-transform active:scale-[0.98]"
+          >
+            <AlarmClockIcon className="size-8 shrink-0 text-gold" />
+            <span className="flex flex-col">
+              <span className="font-semibold">
+                It&apos;s time for your heart check
+              </span>
+              <span className="text-sm opacity-80">
+                Tap to check where your heart is today.
+              </span>
+            </span>
+          </button>
+        )}
+
         {checks.length === 0 ? (
           <Empty>
             <EmptyHeader>
@@ -82,174 +139,258 @@ function HeartCheckList() {
               </EmptyMedia>
               <EmptyTitle>No heart checks yet</EmptyTitle>
               <EmptyDescription>
-                Set a time to pause and examine your heart before God, then rate
-                how it went. It stays on this device.
+                Pause and examine your heart before God. It stays on this
+                device.
               </EmptyDescription>
             </EmptyHeader>
-            <Button onClick={() => setAdding(true)}>
-              <PlusIcon />
-              Schedule heart check
-            </Button>
+            <div className="flex flex-col gap-2">
+              <Button onClick={() => openForm()}>
+                <PlusIcon />
+                Add heart check
+              </Button>
+              <Button
+                variant="ghost"
+                nativeButton={false}
+                render={<Link href="/heart-check/alarms" />}
+              >
+                <AlarmClockIcon />
+                Set an alarm
+              </Button>
+            </div>
           </Empty>
         ) : (
-          <>
-            <HeartCheckSection title="Upcoming" checks={upcoming} />
-            <HeartCheckSection title="Done" checks={done} />
-          </>
+          checks.map((check) => (
+            <HeartCheckCard
+              key={check.id}
+              check={check}
+              onOpen={() => {
+                setViewing(check)
+                setViewerOpen(true)
+              }}
+            />
+          ))
         )}
       </main>
-      <ScheduleDrawer open={adding} onOpenChange={setAdding} />
+      <Drawer open={viewerOpen} onOpenChange={setViewerOpen} showSwipeHandle>
+        <DrawerContent>
+          {/* Kept after closing so the drawer animates out with its content. */}
+          {viewing && (
+            <HeartCheckDetails
+              check={viewing}
+              onEdit={() => {
+                setViewerOpen(false)
+                openForm(viewing)
+              }}
+              onDone={() => setViewerOpen(false)}
+            />
+          )}
+        </DrawerContent>
+      </Drawer>
+      <Drawer open={adding} onOpenChange={setAdding} showSwipeHandle>
+        <DrawerContent>
+          <HeartCheckForm
+            key={form.key}
+            today={form.today}
+            check={form.check}
+            onDone={() => setAdding(false)}
+          />
+        </DrawerContent>
+      </Drawer>
     </>
   )
 }
 
-function HeartCheckSection({
-  title,
-  checks,
+function HeartCheckCard({
+  check,
+  onOpen,
 }: {
-  title: string
-  checks: HeartCheck[]
+  check: HeartCheck
+  onOpen: () => void
 }) {
-  if (checks.length === 0) return null
+  const { label } = getHeartLevel(check.level)
 
   return (
-    <section className="flex flex-col gap-3">
-      <h2 className="px-1 text-xs font-medium tracking-widest text-muted-foreground uppercase">
-        {title}
-      </h2>
-      {checks.map((check) => (
-        <HeartCheckCard key={check.id} check={check} />
-      ))}
-    </section>
+    <button
+      type="button"
+      onClick={onOpen}
+      className="flex items-center gap-3 rounded-2xl bg-card p-5 text-left shadow-xs ring-1 ring-foreground/8 transition-transform active:scale-[0.98]"
+    >
+      <span className="flex flex-1 flex-col gap-1">
+        <span className="flex items-center gap-2">
+          <Hearts level={check.level} />
+          <span className="font-semibold">{label}</span>
+        </span>
+        <time dateTime={check.date} className="text-xs text-muted-foreground">
+          {formatDay(check.date)}
+        </time>
+      </span>
+      <ChevronRightIcon className="size-5 text-muted-foreground" />
+    </button>
   )
 }
 
-function HeartCheckCard({ check }: { check: HeartCheck }) {
+function HeartCheckDetails({
+  check,
+  onEdit,
+  onDone,
+}: {
+  check: HeartCheck
+  onEdit: () => void
+  onDone: () => void
+}) {
+  const { label, description } = getHeartLevel(check.level)
+
   return (
-    <article className="flex flex-col gap-3 rounded-2xl bg-card p-5 shadow-xs ring-1 ring-foreground/8">
-      <header className="flex items-center gap-2">
-        <CalendarClockIcon className="size-4 text-muted-foreground" />
-        <time dateTime={check.scheduledAt} className="font-semibold">
-          {formatHeartCheckDate(check.scheduledAt)}
-        </time>
+    <div className="flex min-h-0 flex-col">
+      <DrawerHeader>
+        <Hearts level={check.level} className="[&>svg]:size-6" />
+        <DrawerTitle>{label}</DrawerTitle>
+        <DrawerDescription>
+          {formatDay(check.date)} · {description}
+        </DrawerDescription>
+      </DrawerHeader>
+      <div className="overflow-y-auto px-4 py-2">
+        <p
+          className={cn(
+            "leading-relaxed whitespace-pre-line",
+            !check.details && "text-muted-foreground italic"
+          )}
+        >
+          {check.details ?? "No details"}
+        </p>
+      </div>
+      <DrawerFooter className="grid grid-cols-2 gap-3 pb-[calc(1rem+env(safe-area-inset-bottom))]">
         <Button
-          variant="ghost"
-          size="icon-sm"
-          className="ml-auto text-muted-foreground"
-          aria-label="Delete heart check"
-          onClick={() => removeHeartCheck(check.id)}
+          variant="secondary"
+          size="lg"
+          className="text-destructive"
+          onClick={() => {
+            removeHeartCheck(check.id)
+            onDone()
+          }}
         >
           <Trash2Icon />
+          Delete
         </Button>
-      </header>
-      {check.description && (
-        <p className="text-sm leading-relaxed whitespace-pre-line text-muted-foreground">
-          {check.description}
-        </p>
-      )}
-      <HeartRating
-        value={check.rating}
-        onChange={(rating) => rateHeartCheck(check.id, rating)}
-      />
-    </article>
-  )
-}
-
-function HeartRating({
-  value = 0,
-  onChange,
-}: {
-  value?: number
-  onChange: (rating: number) => void
-}) {
-  return (
-    <div className="flex items-center gap-1">
-      <div role="radiogroup" aria-label="Rating" className="flex">
-        {Array.from({ length: MAX_RATING }, (_, index) => {
-          const rating = index + 1
-          const filled = rating <= value
-          return (
-            <button
-              key={rating}
-              type="button"
-              role="radio"
-              aria-checked={rating === value}
-              aria-label={`${rating} of ${MAX_RATING}`}
-              onClick={() => onChange(rating)}
-              className="flex size-9 items-center justify-center rounded-full transition-transform active:scale-90"
-            >
-              <HeartIcon
-                className={cn(
-                  "size-6 text-muted-foreground/50",
-                  filled && "fill-brand-red text-brand-red"
-                )}
-              />
-            </button>
-          )
-        })}
-      </div>
-      <span className="text-xs text-muted-foreground">
-        {value ? `${value}/${MAX_RATING}` : "Tap to rate"}
-      </span>
+        <Button size="lg" onClick={onEdit}>
+          <PencilIcon />
+          Edit
+        </Button>
+      </DrawerFooter>
     </div>
   )
 }
 
-function ScheduleDrawer({
-  open,
-  onOpenChange,
+function Hearts({ level, className }: { level: number; className?: string }) {
+  return (
+    <span
+      aria-label={`${level} of ${HEART_LEVELS.length}`}
+      className={cn("flex gap-0.5", className)}
+    >
+      {HEART_LEVELS.map((item) => (
+        <HeartIcon
+          key={item.level}
+          aria-hidden
+          className={cn(
+            "size-4 text-muted-foreground/40",
+            item.level <= level && "fill-brand-red text-brand-red"
+          )}
+        />
+      ))}
+    </span>
+  )
+}
+
+function HeartCheckForm({
+  today,
+  check,
+  onDone,
 }: {
-  open: boolean
-  onOpenChange: (open: boolean) => void
+  /** "YYYY-MM-DD"; the default date and the latest one allowed. */
+  today: string
+  /** The heart check to edit; omit to add a new one. */
+  check?: HeartCheck
+  onDone: () => void
 }) {
+  const [level, setLevel] = React.useState<HeartLevel | null>(
+    check?.level ?? null
+  )
+
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
+    if (level === null) return
     const form = new FormData(event.currentTarget)
-    const scheduledAt = String(form.get("scheduledAt"))
-    const description = String(form.get("description")).trim()
-    if (!scheduledAt) return
-
-    addHeartCheck({ scheduledAt, description: description || undefined })
-    onOpenChange(false)
+    const date = String(form.get("date")) || today
+    const details = String(form.get("details")).trim() || undefined
+    if (check) updateHeartCheck(check.id, { level, date, details })
+    else addHeartCheck({ level, date, details })
+    onDone()
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange} showSwipeHandle>
-      <DrawerContent>
-        <form onSubmit={onSubmit} className="flex min-h-0 flex-col">
-          <DrawerHeader>
-            <DrawerTitle>Schedule heart check</DrawerTitle>
-            <DrawerDescription>Saved on this device only.</DrawerDescription>
-          </DrawerHeader>
-          <FieldGroup className="overflow-y-auto p-4">
-            <Field>
-              <FieldLabel htmlFor="scheduledAt">Date and time</FieldLabel>
-              <Input
-                id="scheduledAt"
-                name="scheduledAt"
-                type="datetime-local"
-                required
-              />
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="description">Description</FieldLabel>
-              <Textarea
-                id="description"
-                name="description"
-                rows={4}
-                placeholder="What do you want to bring before God?"
-              />
-              <FieldDescription>Optional.</FieldDescription>
-            </Field>
-          </FieldGroup>
-          <DrawerFooter className="pb-[calc(1rem+env(safe-area-inset-bottom))]">
-            <Button type="submit" size="lg">
-              Schedule
-            </Button>
-          </DrawerFooter>
-        </form>
-      </DrawerContent>
-    </Drawer>
+    <form onSubmit={onSubmit} className="flex min-h-0 flex-col">
+      <DrawerHeader>
+        <DrawerTitle>{check ? "Edit heart check" : "Heart check"}</DrawerTitle>
+        <DrawerDescription>Where is your heart today?</DrawerDescription>
+      </DrawerHeader>
+      <div className="flex flex-col gap-5 overflow-y-auto p-4">
+        <label className="flex flex-col gap-1.5">
+          <span className="text-sm font-medium">Date</span>
+          <Input
+            name="date"
+            type="date"
+            defaultValue={check?.date ?? today}
+            max={today}
+            required
+          />
+        </label>
+        <div role="radiogroup" aria-label="Level" className="grid gap-2">
+          {HEART_LEVELS.map((item) => {
+            const selected = level === item.level
+            return (
+              <button
+                key={item.level}
+                type="button"
+                role="radio"
+                aria-checked={selected}
+                onClick={() => setLevel(item.level)}
+                className={cn(
+                  "flex items-center gap-4 rounded-2xl bg-muted/60 p-4 text-left ring-2 ring-transparent transition-colors",
+                  selected && "bg-secondary ring-primary dark:ring-gold"
+                )}
+              >
+                <Hearts level={item.level} className="w-14 shrink-0" />
+                <span className="flex flex-col">
+                  <span className="font-semibold">{item.label}</span>
+                  <span className="text-sm text-muted-foreground">
+                    {item.description}
+                  </span>
+                </span>
+              </button>
+            )
+          })}
+        </div>
+        <label className="flex flex-col gap-1.5">
+          <span className="text-sm font-medium">
+            Details{" "}
+            <span className="font-normal text-muted-foreground">
+              (optional)
+            </span>
+          </span>
+          <Textarea
+            name="details"
+            defaultValue={check?.details}
+            rows={4}
+            placeholder="What's on your heart?"
+          />
+        </label>
+      </div>
+      <DrawerFooter className="pb-[calc(1rem+env(safe-area-inset-bottom))]">
+        <Button type="submit" size="lg" disabled={level === null}>
+          Save
+        </Button>
+      </DrawerFooter>
+    </form>
   )
 }
 

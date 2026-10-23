@@ -1,15 +1,13 @@
 "use client"
 
-import { useHeartChecks } from "@/lib/heart-checks"
+import { getHeartLevel, useHeartChecks } from "@/lib/heart-checks"
 
 function HeartCheckCount() {
-  const upcoming = useHeartChecks().filter(
-    (check) => check.rating === undefined
-  ).length
+  const latest = useHeartChecks().at(0)
 
   return (
     <span className="text-xs text-muted-foreground">
-      {upcoming === 0 ? "Schedule one" : `${upcoming} upcoming`}
+      {latest ? `Last: ${getHeartLevel(latest.level).label}` : "Check in"}
     </span>
   )
 }

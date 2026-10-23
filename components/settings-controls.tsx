@@ -23,6 +23,10 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import {
+  clearHeartCheckAlarms,
+  useHeartCheckAlarms,
+} from "@/lib/heart-check-alarms"
 import { clearHeartChecks, useHeartChecks } from "@/lib/heart-checks"
 import { promptInstall, useInstallState } from "@/lib/install-prompt"
 import { clearMemoryVerses, useMemoryVerses } from "@/lib/memory-verses"
@@ -128,7 +132,8 @@ function InstallAppButton() {
 function ClearDataButton() {
   const verseCount = useMemoryVerses().length
   const checkCount = useHeartChecks().length
-  const count = verseCount + checkCount
+  const alarmCount = useHeartCheckAlarms().length
+  const count = verseCount + checkCount + alarmCount
   const [open, setOpen] = React.useState(false)
 
   return (
@@ -155,8 +160,9 @@ function ClearDataButton() {
             <AlertDialogTitle>Delete all your data?</AlertDialogTitle>
             <AlertDialogDescription>
               This removes {verseCount} memory{" "}
-              {verseCount === 1 ? "verse" : "verses"} and {checkCount} heart{" "}
-              {checkCount === 1 ? "check" : "checks"} from this device. This
+              {verseCount === 1 ? "verse" : "verses"}, {checkCount} heart{" "}
+              {checkCount === 1 ? "check" : "checks"} and {alarmCount}{" "}
+              {alarmCount === 1 ? "alarm" : "alarms"} from this device. This
               can&apos;t be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
@@ -167,6 +173,7 @@ function ClearDataButton() {
               onClick={() => {
                 clearMemoryVerses()
                 clearHeartChecks()
+                clearHeartCheckAlarms()
                 setOpen(false)
               }}
             >

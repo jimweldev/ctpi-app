@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 import {
-  BookmarkIcon,
+  BrainIcon,
   BookOpenIcon,
   ChevronRightIcon,
   HeartIcon,
@@ -88,7 +88,7 @@ export default function HomePage() {
             className="flex flex-col gap-3 rounded-3xl bg-card p-4 ring-1 ring-foreground/8 transition-transform active:scale-[0.97]"
           >
             <span className="flex size-10 items-center justify-center rounded-2xl bg-accent text-accent-foreground">
-              <BookmarkIcon className="size-5" />
+              <BrainIcon className="size-5" />
             </span>
             <span className="flex flex-col">
               <span className="font-semibold">Memory Verses</span>

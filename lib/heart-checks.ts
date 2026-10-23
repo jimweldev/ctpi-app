@@ -1,35 +1,66 @@
 "use client"
 
+import * as React from "react"
+
+import { toDateKey } from "@/lib/heart-check-alarms"
 import { createLocalList } from "@/lib/local-list"
 
+/** A self-check of where your heart is, at one moment. */
 export type HeartCheck = {
   id: string
-  /** Local date and time as "YYYY-MM-DDTHH:mm" (a datetime-local value). */
-  scheduledAt: string
-  description?: string
-  /** 1 to 5 hearts. A rated check counts as done. */
-  rating?: number
+  level: HeartLevel
+  details?: string
+  /** Local "YYYY-MM-DD" the check is for; defaults to the day it was added. */
+  date: string
   createdAt: number
 }
 
-export const MAX_RATING = 5
+export type HeartLevel = 1 | 2 | 3
 
-const { read, write, useList } =
-  createLocalList<HeartCheck>("ctpi:heart-checks")
+export const HEART_LEVELS: {
+  level: HeartLevel
+  label: string
+  description: string
+}[] = [
+  { level: 1, label: "Struggling", description: "My heart feels far from God" },
+  { level: 2, label: "Steady", description: "Holding on, with room to grow" },
+  { level: 3, label: "Thriving", description: "Close to God and full of love" },
+]
 
-export const useHeartChecks = useList
-
-export function addHeartCheck(
-  check: Pick<HeartCheck, "scheduledAt" | "description">
-) {
-  write([
-    ...read(),
-    { ...check, id: crypto.randomUUID(), createdAt: Date.now() },
-  ])
+export function getHeartLevel(level: HeartLevel) {
+  return HEART_LEVELS.find((item) => item.level === level) ?? HEART_LEVELS[0]
 }
 
-export function rateHeartCheck(id: string, rating: number) {
-  write(read().map((check) => (check.id === id ? { ...check, rating } : check)))
+const { read, write, useList } = createLocalList<HeartCheck>(
+  "ctpi:heart-check-entries"
+)
+
+/** Heart checks, newest date first (most recently added first within a day). */
+export function useHeartChecks() {
+  const checks = useList()
+  return React.useMemo(
+    () =>
+      checks
+        // Checks saved before dates existed fall back to the day added.
+        .map((check) =>
+          check.date
+            ? check
+            : { ...check, date: toDateKey(new Date(check.createdAt)) }
+        )
+        .sort(
+          (a, b) => b.date.localeCompare(a.date) || b.createdAt - a.createdAt
+        ),
+    [checks]
+  )
+}
+
+export function addHeartCheck(
+  check: Pick<HeartCheck, "level" | "details" | "date">
+) {
+  write([
+    { ...check, id: crypto.randomUUID(), createdAt: Date.now() },
+    ...read(),
+  ])
 }
 
 export function removeHeartCheck(id: string) {
@@ -40,12 +71,11 @@ export function clearHeartChecks() {
   write([])
 }
 
-export function formatHeartCheckDate(scheduledAt: string) {
-  return new Date(scheduledAt).toLocaleString("en-US", {
-    weekday: "short",
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "2-digit",
-  })
+export function updateHeartCheck(
+  id: string,
+  patch: Partial<Pick<HeartCheck, "level" | "details" | "date">>
+) {
+  write(
+    read().map((check) => (check.id === id ? { ...check, ...patch } : check))
+  )
 }

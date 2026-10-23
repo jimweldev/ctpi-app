@@ -29,7 +29,7 @@ export default function SettingsPage() {
 
         <SettingsSection
           title="Data"
-          description="Memory verses and heart checks are stored on this device only."
+          description="Memory verses, heart checks and alarms are stored on this device only."
         >
           <ClearDataButton />
         </SettingsSection>

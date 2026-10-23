@@ -1,7 +1,7 @@
 "use client"
 
 import * as React from "react"
-import { BookmarkIcon, PlusIcon, Trash2Icon } from "lucide-react"
+import { BrainIcon, PlusIcon, Trash2Icon } from "lucide-react"
 
 import { PageHeader } from "@/components/page-header"
 import { Button } from "@/components/ui/button"
@@ -53,7 +53,7 @@ function MemoryVerseList() {
           <Empty>
             <EmptyHeader>
               <EmptyMedia variant="icon">
-                <BookmarkIcon />
+                <BrainIcon />
               </EmptyMedia>
               <EmptyTitle>No memory verses yet</EmptyTitle>
               <EmptyDescription>

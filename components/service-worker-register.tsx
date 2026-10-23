@@ -2,8 +2,12 @@
 
 import * as React from "react"
 
+import { captureInstallPrompt } from "@/lib/install-prompt"
+
 function ServiceWorkerRegister() {
   React.useEffect(() => {
+    captureInstallPrompt()
+
     // Skip in dev so the SW cache never serves stale HMR bundles.
     if (process.env.NODE_ENV !== "production") return
     if (!("serviceWorker" in navigator)) return

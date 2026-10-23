@@ -1,0 +1,995 @@
+{
+  "series": [
+    {
+      "slug": "prepare-to-fight-the-enemy",
+      "title": "Prepare to fight the enemy",
+      "subtitle": "The full armor of God to victory",
+      "scripture": {
+        "reference": "Ephesians 6:10-17",
+        "version": "NIV",
+        "verses": [
+          {
+            "number": 10,
+            "text": "Finally, be strong in the Lord and in his mighty power."
+          },
+          {
+            "number": 11,
+            "text": "Put on the full armor of God, so that you can take your stand against the devil's schemes."
+          },
+          {
+            "number": 12,
+            "text": "For our struggle is not against flesh and blood, but against the rulers, against the authorities, against the powers of this dark world and against the spiritual forces of evil in the heavenly realms."
+          },
+          {
+            "number": 13,
+            "text": "Therefore put on the full armor of God, so that when the day of evil comes, you may be able to stand your ground, and after you have done everything, to stand."
+          },
+          {
+            "number": 14,
+            "text": "Stand firm then, with the belt of truth buckled around your waist, with the breastplate of righteousness in place,"
+          },
+          {
+            "number": 15,
+            "text": "and with your feet fitted with the readiness that comes from the gospel of peace."
+          },
+          {
+            "number": 16,
+            "text": "In addition to all this, take up the shield of faith, with which you can extinguish all the flaming arrows of the evil one."
+          },
+          {
+            "number": 17,
+            "text": "Take the helmet of salvation and the sword of the Spirit, which is the word of God."
+          }
+        ]
+      }
+    },
+    {
+      "slug": "rooted",
+      "title": "Rooted",
+      "subtitle": "Growing deep in faith",
+      "scripture": {
+        "reference": "Colossians 2:6-7",
+        "version": "NLT",
+        "verses": [
+          {
+            "number": 6,
+            "text": "And now, just as you accepted Christ Jesus as your Lord, you must continue to follow him."
+          },
+          {
+            "number": 7,
+            "text": "Let your roots grow down into him, and let your lives be built on him. Then your faith will grow strong in the truth you were taught, and you will overflow with thankfulness."
+          }
+        ]
+      }
+    }
+  ],
+  "sermons": [
+    {
+      "slug": "grace-for-today",
+      "title": "Grace for today",
+      "date": "2026-08-09",
+      "content": [
+        {
+          "type": "note",
+          "text": "God's grace is not a reward for the strong. It is a gift for the weak."
+        },
+        {
+          "type": "point",
+          "title": "Grace is new every morning",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "Lamentations 3:22-23",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 22,
+                  "text": "The faithful love of the LORD never ends!\nHis mercies never cease."
+                },
+                {
+                  "number": 23,
+                  "text": "Great is his faithfulness;\nhis mercies begin afresh each morning."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "Yesterday's failure does not cancel today's mercy."
+            }
+          ]
+        },
+        {
+          "type": "point",
+          "title": "Grace is a gift, not a wage",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "Ephesians 2:8-9",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 8,
+                  "text": "God saved you by his grace when you believed. And you can’t take credit for this; it is a gift from God."
+                },
+                {
+                  "number": 9,
+                  "text": "Salvation is not a reward for the good things we have done, so none of us can boast about it."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "You cannot earn what God has already given."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "rooted-in-prayer",
+      "title": "Rooted in prayer",
+      "series": "rooted",
+      "date": "2026-08-16",
+      "content": [
+        {
+          "type": "note",
+          "text": "Prayer is where roots grow deep before fruit grows high."
+        },
+        {
+          "type": "point",
+          "title": "Pray in secret",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "Matthew 6:6",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 6,
+                  "text": "But when you pray, go away by yourself, shut the door behind you, and pray to your Father in private. Then your Father, who sees everything, will reward you."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "What God sees in secret, He shapes in public."
+            }
+          ]
+        },
+        {
+          "type": "point",
+          "title": "Pray without ceasing",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "1 Thessalonians 5:16-18",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 16,
+                  "text": "Always be joyful."
+                },
+                {
+                  "number": 17,
+                  "text": "Never stop praying."
+                },
+                {
+                  "number": 18,
+                  "text": "Be thankful in all circumstances, for this is God’s will for you who belong to Christ Jesus."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "Prayer is not an event. It is a lifestyle."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "rooted-in-the-word",
+      "title": "Rooted in the Word",
+      "series": "rooted",
+      "date": "2026-08-23",
+      "content": [
+        {
+          "type": "note",
+          "text": "A tree planted by the water does not fear the dry season."
+        },
+        {
+          "type": "point",
+          "title": "Delight in the Word",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "Psalms 1:1-3",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 1,
+                  "text": "Oh, the joys of those who do not\nfollow the advice of the wicked,\nor stand around with sinners,\nor join in with mockers."
+                },
+                {
+                  "number": 2,
+                  "text": "But they delight in the law of the LORD,\nmeditating on it day and night."
+                },
+                {
+                  "number": 3,
+                  "text": "They are like trees planted along the riverbank,\nbearing fruit each season.\nTheir leaves never wither,\nand they prosper in all they do."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "point",
+          "title": "Be equipped by the Word",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "2 Timothy 3:16-17",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 16,
+                  "text": "All Scripture is inspired by God and is useful to teach us what is true and to make us realize what is wrong in our lives. It corrects us when we are wrong and teaches us to do what is right."
+                },
+                {
+                  "number": 17,
+                  "text": "God uses it to prepare and equip his people to do every good work."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "The Word does not just inform you. It equips you."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "rooted-in-community",
+      "title": "Rooted in community",
+      "series": "rooted",
+      "date": "2026-08-30",
+      "content": [
+        {
+          "type": "note",
+          "text": "Roots grow stronger when they grow together."
+        },
+        {
+          "type": "point",
+          "title": "Encourage one another",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "Hebrews 10:24-25",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 24,
+                  "text": "Let us think of ways to motivate one another to acts of love and good works."
+                },
+                {
+                  "number": 25,
+                  "text": "And let us not neglect our meeting together, as some people do, but encourage one another, especially now that the day of his return is drawing near."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "point",
+          "title": "Devote yourselves together",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "Acts 2:42",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 42,
+                  "text": "All the believers devoted themselves to the apostles’ teaching, and to fellowship, and to sharing in meals (including the Lord’s Supper ), and to prayer."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "Faith grows best in family."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "prepare-your-strength-in-god",
+      "title": "Prepare your strength in God",
+      "series": "prepare-to-fight-the-enemy",
+      "date": "2026-09-06",
+      "content": [
+        {
+          "type": "note",
+          "text": "Before you put on the armor, you need the strength to stand in it."
+        },
+        {
+          "type": "point",
+          "title": "Be strong in the Lord, not in yourself",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "Philippians 4:13",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 13,
+                  "text": "For I can do everything through Christ, who gives me strength."
+                }
+              ]
+            },
+            {
+              "type": "verse",
+              "reference": "Zechariah 4:6",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 6,
+                  "text": "Then he said to me, “This is what the LORD says to Zerubbabel: It is not by force nor by strength, but by my Spirit, says the LORD of Heaven’s Armies."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "Your strength runs out. His never does."
+            }
+          ]
+        },
+        {
+          "type": "point",
+          "title": "Wait on the Lord",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "Isaiah 40:31",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 31,
+                  "text": "But those who trust in the LORD will find new strength.\nThey will soar high on wings like eagles.\nThey will run and not grow weary.\nThey will walk and not faint."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "Waiting on God is not wasted time. It is refueling."
+            }
+          ]
+        },
+        {
+          "type": "point",
+          "title": "His power works in your weakness",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "2 Corinthians 12:9",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 9,
+                  "text": "Each time he said, “My grace is all you need. My power works best in weakness.” So now I am glad to boast about my weaknesses, so that the power of Christ can work through me."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "Weakness surrendered to God becomes strength."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "prepare-with-the-truth",
+      "title": "Prepare with the truth",
+      "series": "prepare-to-fight-the-enemy",
+      "date": "2026-09-13",
+      "content": [
+        {
+          "type": "note",
+          "text": "The belt of truth holds every other piece of armor in place."
+        },
+        {
+          "type": "point",
+          "title": "Know the truth",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "John 8:31-32",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 31,
+                  "text": "Jesus said to the people who believed in him, “You are truly my disciples if you remain faithful to my teachings."
+                },
+                {
+                  "number": 32,
+                  "text": "And you will know the truth, and the truth will set you free.”"
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "Truth you know is truth that sets you free."
+            }
+          ]
+        },
+        {
+          "type": "point",
+          "title": "Recognize the lie",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "John 8:44",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 44,
+                  "text": "For you are the children of your father the devil, and you love to do the evil things he does. He was a murderer from the beginning. He has always hated the truth, because there is no truth in him. When he lies, it is consistent with his character; for he is a liar and the father of lies."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "The enemy's first weapon is a lie. Truth disarms it."
+            }
+          ]
+        },
+        {
+          "type": "point",
+          "title": "Walk in the truth",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "3 John 1:4",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 4,
+                  "text": "I could have no greater joy than to hear that my children are following the truth."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "prepare-your-heart",
+      "title": "Prepare your heart",
+      "series": "prepare-to-fight-the-enemy",
+      "date": "2026-09-20",
+      "content": [
+        {
+          "type": "note",
+          "text": "The breastplate of righteousness guards what matters most: your heart."
+        },
+        {
+          "type": "point",
+          "title": "Guard your heart",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "Proverbs 4:23",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 23,
+                  "text": "Guard your heart above all else,\nfor it determines the course of your life."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "What you allow in your heart decides where your life goes."
+            }
+          ]
+        },
+        {
+          "type": "point",
+          "title": "Wear His righteousness",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "2 Corinthians 5:21",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 21,
+                  "text": "For God made Christ, who never sinned, to be the offering for our sin, so that we could be made right with God through Christ."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "You don't stand in your own goodness. You stand in His."
+            }
+          ]
+        },
+        {
+          "type": "point",
+          "title": "Ask for a clean heart",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "Psalms 51:10",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 10,
+                  "text": "Create in me a clean heart, O God.\nRenew a loyal spirit within me."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "prepare-your-walk",
+      "title": "Prepare your walk",
+      "series": "prepare-to-fight-the-enemy",
+      "date": "2026-09-27",
+      "content": [
+        {
+          "type": "note",
+          "text": "Feet fitted with the gospel of peace are ready to stand and ready to go."
+        },
+        {
+          "type": "point",
+          "title": "Be ready",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "1 Peter 3:15",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 15,
+                  "text": "Instead, you must worship Christ as Lord of your life. And if someone asks about your hope as a believer, always be ready to explain it."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "Readiness is decided before the moment comes."
+            }
+          ]
+        },
+        {
+          "type": "point",
+          "title": "Carry the good news",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "Romans 10:15",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 15,
+                  "text": "And how will anyone go and tell them without being sent? That is why the Scriptures say, “How beautiful are the feet of messengers who bring good news!”"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "point",
+          "title": "Walk in peace",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "Philippians 4:6-7",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 6,
+                  "text": "Don’t worry about anything; instead, pray about everything. Tell God what you need, and thank him for all he has done."
+                },
+                {
+                  "number": 7,
+                  "text": "Then you will experience God’s peace, which exceeds anything we can understand. His peace will guard your hearts and minds as you live in Christ Jesus."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "Peace is not the absence of battle. It is God's presence in it."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "prepare-your-defense",
+      "title": "Prepare your defense",
+      "series": "prepare-to-fight-the-enemy",
+      "date": "2026-10-04",
+      "content": [
+        {
+          "type": "note",
+          "text": "The shield of faith stops every flaming arrow of the enemy."
+        },
+        {
+          "type": "point",
+          "title": "Understand faith",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "Hebrews 11:1",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 1,
+                  "text": "Faith shows the reality of what we hope for; it is the evidence of things we cannot see."
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "type": "point",
+          "title": "Grow your faith",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "Romans 10:17",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 17,
+                  "text": "So faith comes from hearing, that is, hearing the Good News about Christ."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "Faith grows the same way it starts: by hearing the Word."
+            }
+          ]
+        },
+        {
+          "type": "point",
+          "title": "Faith overcomes",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "1 John 5:4",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 4,
+                  "text": "For every child of God defeats this evil world, and we achieve this victory through our faith."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "Lift the shield. The arrows will fall."
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "prepare-your-mind",
+      "title": "Prepare your mind",
+      "series": "prepare-to-fight-the-enemy",
+      "date": "2026-10-11",
+      "content": [
+        {
+          "type": "note",
+          "text": "The helmet of salvation protects the battlefield of the mind."
+        },
+        {
+          "type": "point",
+          "title": "Renew your mind",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "Romans 12:2",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 2,
+                  "text": "Don’t copy the behavior and customs of this world, but let God transform you into a new person by changing the way you think. Then you will learn to know God’s will for you, which is good and pleasing and perfect."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "Change your thinking and your living follows."
+            }
+          ]
+        },
+        {
+          "type": "point",
+          "title": "Take every thought captive",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "2 Corinthians 10:5",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 5,
+                  "text": "We destroy every proud obstacle that keeps people from knowing God. We capture their rebellious thoughts and teach them to obey Christ."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "Not every thought deserves a home in your mind."
+            }
+          ]
+        },
+        {
+          "type": "point",
+          "title": "Fix your thoughts",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "Philippians 4:8",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 8,
+                  "text": "And now, dear brothers and sisters, one final thing. Fix your thoughts on what is true, and honorable, and right, and pure, and lovely, and admirable. Think about things that are excellent and worthy of praise."
+                }
+              ]
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "slug": "prepare-your-weapon",
+      "title": "Prepare your weapon",
+      "content": [
+        {
+          "type": "note",
+          "text": "Defend with the armor.\nAdvance with the armor.\nAttack with the Word."
+        },
+        {
+          "type": "point",
+          "title": "Memorize Scriptures by heart",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "Psalms 119:11",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 11,
+                  "text": "I have hidden your word in my heart,\nthat I might not sin against you."
+                }
+              ]
+            },
+            {
+              "type": "verse",
+              "reference": "Joshua 1:8",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 8,
+                  "text": "Study this Book of Instruction continually. Meditate on it day and night so you will be sure to obey everything written in it. Only then will you prosper and succeed in all you do."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "A memorized verse today is a victory tomorrow."
+            }
+          ]
+        },
+        {
+          "type": "section",
+          "title": "Review",
+          "content": [
+            {
+              "type": "declaration",
+              "lines": ["Know the Word.", "Speak the Word.", "Live the Word."]
+            },
+            {
+              "type": "text",
+              "text": "That's how we prepare our weapon — and that's how we win."
+            },
+            {
+              "type": "verse",
+              "reference": "Deuteronomy 6:6-8",
+              "version": "NIV",
+              "verses": [
+                {
+                  "number": 6,
+                  "text": "These commandments that I give you today are to be on your hearts."
+                },
+                {
+                  "number": 7,
+                  "text": "Impress them on your children. Talk about them when you sit at home and when you walk along the road, when you lie down and when you get up."
+                },
+                {
+                  "number": 8,
+                  "text": "Tie them as symbols on your hands and bind them on your foreheads."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "Let the Word fill your heart, shape your words, and guide your actions."
+            }
+          ]
+        },
+        {
+          "type": "point",
+          "title": "Speak Scripture against evil",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "Matthew 4:1-11",
+              "version": "NIV",
+              "verses": [
+                {
+                  "number": 1,
+                  "text": "Then Jesus was led by the Spirit into the wilderness to be tempted by the devil."
+                },
+                {
+                  "number": 2,
+                  "text": "After fasting forty days and forty nights, he was hungry."
+                },
+                {
+                  "number": 3,
+                  "text": "The tempter came to him and said, \"If you are the Son of God, tell these stones to become bread.\""
+                },
+                {
+                  "number": 4,
+                  "text": "Jesus answered, \"It is written: 'Man shall not live on bread alone, but on every word that comes from the mouth of God.'\""
+                },
+                {
+                  "number": 5,
+                  "text": "Then the devil took him to the holy city and had him stand on the highest point of the temple."
+                },
+                {
+                  "number": 6,
+                  "text": "\"If you are the Son of God,\" he said, \"throw yourself down. For it is written: 'He will command his angels concerning you, and they will lift you up in their hands, so that you will not strike your foot against a stone.'\""
+                },
+                {
+                  "number": 7,
+                  "text": "Jesus answered him, \"It is also written: 'Do not put the Lord your God to the test.'\""
+                },
+                {
+                  "number": 8,
+                  "text": "Again, the devil took him to a very high mountain and showed him all the kingdoms of the world and their splendor."
+                },
+                {
+                  "number": 9,
+                  "text": "\"All this I will give you,\" he said, \"if you will bow down and worship me.\""
+                },
+                {
+                  "number": 10,
+                  "text": "Jesus said to him, \"Away from me, Satan! For it is written: 'Worship the Lord your God, and serve him only.'\""
+                },
+                {
+                  "number": 11,
+                  "text": "Then the devil left him, and angels came and attended him."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "Speak Scripture, and every lie loses its power."
+            },
+            {
+              "type": "note",
+              "text": "We win not by staying silent, but by speaking God's Word in faith."
+            },
+            {
+              "type": "note",
+              "text": "The Sword of the Spirit is both a shield and a weapon."
+            },
+            {
+              "type": "verse",
+              "reference": "Revelation 12:11",
+              "version": "CEV",
+              "verses": [
+                {
+                  "number": 11,
+                  "text": "Our people defeated Satan because of the blood of the Lamb and the message of God. They were willing to give up their lives."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "Speak the Word, stand on the Blood, and Satan is defeated."
+            },
+            {
+              "type": "verse",
+              "reference": "Isaiah 54:17",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 17,
+                  "text": "But in that coming day\nno weapon turned against you will succeed.\nYou will silence every voice\nraised up to accuse you.\nThese benefits are enjoyed by the servants of the LORD;\ntheir vindication will come from me.\nI, the LORD, have spoken!"
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "When the enemy speaks, answer with Scripture. No weapon will prevail."
+            }
+          ]
+        },
+        {
+          "type": "point",
+          "title": "Live our Scriptures every day",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "James 1:22",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 22,
+                  "text": "But don't just listen to God's word. You must do what it says. Otherwise, you are only fooling yourselves."
+                }
+              ]
+            },
+            {
+              "type": "verse",
+              "reference": "Luke 11:28",
+              "version": "NIV",
+              "verses": [
+                {
+                  "number": 28,
+                  "text": "He replied, \"Blessed rather are those who hear the word of God and obey it.\""
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "How you live proves what you believe — and that's what defeats the enemy."
+            },
+            {
+              "type": "verse",
+              "reference": "Matthew 7:24-27",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 24,
+                  "text": "\"Anyone who listens to my teaching and follows it is wise, like a person who builds a house on solid rock."
+                },
+                {
+                  "number": 25,
+                  "text": "Though the rain comes in torrents and the floodwaters rise and the winds beat against that house, it won't collapse because it is built on bedrock."
+                },
+                {
+                  "number": 26,
+                  "text": "But anyone who hears my teaching and doesn't obey it is foolish, like a person who builds a house on sand."
+                },
+                {
+                  "number": 27,
+                  "text": "When the rains and floods come and the winds beat against that house, it will collapse with a mighty crash.\""
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "Don't just carry the Sword. Live the Sword. That's what makes your house unshakable."
+            }
+          ]
+        }
+      ],
+      "series": "prepare-to-fight-the-enemy",
+      "date": "2026-10-18"
+    }
+  ]
+}

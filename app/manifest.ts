@@ -2,9 +2,9 @@ import type { MetadataRoute } from "next"
 
 export default function manifest(): MetadataRoute.Manifest {
   return {
-    name: "Calvary Temple Philippines",
+    name: "Calvary Temple Philippines Inc.",
     short_name: "Calvary Temple",
-    description: "Calvary Temple Philippines",
+    description: "A church that has passion for God and compassion for man.",
     id: "/",
     start_url: "/",
     scope: "/",

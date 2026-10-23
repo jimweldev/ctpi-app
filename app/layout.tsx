@@ -1,12 +1,16 @@
 import type { Metadata, Viewport } from "next"
-import { Geist_Mono, Inter } from "next/font/google"
+import { Geist_Mono, Inter, Lora } from "next/font/google"
 
 import "./globals.css"
+import { BottomNav } from "@/components/bottom-nav"
 import { ServiceWorkerRegister } from "@/components/service-worker-register"
 import { ThemeProvider } from "@/components/theme-provider"
 import { cn } from "@/lib/utils"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
+
+// Scripture text: a book-like serif that echoes the "Calvary" wordmark.
+const fontSerif = Lora({ subsets: ["latin"], variable: "--font-serif" })
 
 const fontMono = Geist_Mono({
   subsets: ["latin"],
@@ -15,10 +19,10 @@ const fontMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: {
-    default: "Calvary Temple Philippines",
-    template: "%s · Calvary Temple Philippines",
+    default: "Calvary Temple Philippines Inc.",
+    template: "%s · Calvary Temple Philippines Inc.",
   },
-  description: "Calvary Temple Philippines",
+  description: "A church that has passion for God and compassion for man.",
   applicationName: "Calvary Temple",
   appleWebApp: {
     capable: true,
@@ -47,12 +51,16 @@ export default function RootLayout({
       className={cn(
         "antialiased",
         fontMono.variable,
+        fontSerif.variable,
         "font-sans",
         inter.variable
       )}
     >
-      <body>
-        <ThemeProvider>{children}</ThemeProvider>
+      <body className="min-h-svh bg-background pb-[calc(4rem+env(safe-area-inset-bottom))]">
+        <ThemeProvider>
+          {children}
+          <BottomNav />
+        </ThemeProvider>
         <ServiceWorkerRegister />
       </body>
     </html>

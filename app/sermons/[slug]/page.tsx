@@ -6,10 +6,12 @@ import { cn } from "cn"
 
 import { PageHeader } from "@/components/page-header"
 import { SermonContent, VerseCard } from "@/components/sermon-content"
+import { type SermonTab, SermonTabs } from "@/components/sermon-tabs"
 import {
   formatSermonDate,
   getAllSermons,
   getSermon,
+  getSermonParts,
   getSeriesNeighbors,
   type SermonEntry,
 } from "@/lib/sermons"
@@ -35,6 +37,38 @@ export default async function SermonPage(props: PageProps<"/sermons/[slug]">) {
 
   const { seriesInfo } = sermon
   const { previous, next } = getSeriesNeighbors(sermon)
+
+  const { intro, points } = getSermonParts(sermon.content)
+  const tabs: SermonTab[] = points.map((blocks, index) => ({
+    value: `point-${index + 1}`,
+    label: `Point ${index + 1}`,
+    content: (
+      <SermonContent
+        blocks={blocks}
+        pointsBefore={index}
+        className="[&>section:first-child]:mt-0"
+      />
+    ),
+  }))
+  if (sermon.outro?.length) {
+    tabs.push({
+      value: "outro",
+      label: "Outro",
+      content: <SermonContent blocks={sermon.outro} />,
+    })
+  }
+  if (seriesInfo?.scripture || intro.length > 0) {
+    tabs.unshift({
+      value: "intro",
+      label: "Intro",
+      content: (
+        <>
+          {seriesInfo?.scripture && <VerseCard verse={seriesInfo.scripture} />}
+          <SermonContent blocks={intro} />
+        </>
+      ),
+    })
+  }
 
   return (
     <>
@@ -82,9 +116,7 @@ export default async function SermonPage(props: PageProps<"/sermons/[slug]">) {
           )}
         </header>
 
-        {seriesInfo?.scripture && <VerseCard verse={seriesInfo.scripture} />}
-
-        <SermonContent blocks={sermon.content} />
+        <SermonTabs tabs={tabs} />
 
         {(previous || next) && (
           <nav className="mt-6 grid grid-cols-2 gap-3">

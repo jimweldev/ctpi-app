@@ -31,7 +31,7 @@ export function getHeartLevel(level: HeartLevel) {
   return HEART_LEVELS.find((item) => item.level === level) ?? HEART_LEVELS[0]
 }
 
-const { read, write, useList } = createLocalList<HeartCheck>(
+const { read, write, merge, useList } = createLocalList<HeartCheck>(
   "ctpi:heart-check-entries"
 )
 
@@ -77,5 +77,22 @@ export function updateHeartCheck(
 ) {
   write(
     read().map((check) => (check.id === id ? { ...check, ...patch } : check))
+  )
+}
+
+export const getHeartChecks = read
+
+/** Add valid heart checks from a backup; returns how many were new. */
+export function importHeartChecks(items: unknown[]) {
+  return merge(items.filter(isHeartCheck))
+}
+
+function isHeartCheck(value: unknown): value is HeartCheck {
+  const check = value as HeartCheck
+  return (
+    typeof check?.id === "string" &&
+    HEART_LEVELS.some((item) => item.level === check.level) &&
+    typeof check.date === "string" &&
+    typeof check.createdAt === "number"
   )
 }

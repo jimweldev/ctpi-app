@@ -156,4 +156,14 @@
     -webkit-tap-highlight-color: transparent;
     overscroll-behavior-y: none;
   }
+  /* Font size setting (lib/font-size.ts): scales every rem-based size. */
+  html[data-font-size="small"] {
+    font-size: 93.75%;
+  }
+  html[data-font-size="large"] {
+    font-size: 112.5%;
+  }
+  html[data-font-size="xlarge"] {
+    font-size: 125%;
+  }
 }

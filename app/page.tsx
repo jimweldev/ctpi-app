@@ -5,17 +5,16 @@ import {
   BookOpenIcon,
   ChevronRightIcon,
   HeartIcon,
-  LibraryIcon,
 } from "lucide-react"
 
 import { HeartCheckCount } from "@/components/heart-check-count"
 import { MemoryVerseCount } from "@/components/memory-verse-count"
+import { UpcomingEvents } from "@/components/upcoming-events"
+import { getAllEvents } from "@/lib/events"
 import { formatSermonDate, getAllSermons } from "@/lib/sermons"
-import { getAllVerses } from "@/lib/verses"
 
 export default function HomePage() {
   const sermons = getAllSermons()
-  const verseCount = getAllVerses().length
   const latest = sermons.at(0)
 
   return (
@@ -68,6 +67,8 @@ export default function HomePage() {
           </Link>
         )}
 
+        <UpcomingEvents events={getAllEvents()} />
+
         <div className="grid grid-cols-2 gap-3">
           <Link
             href="/sermons"
@@ -96,22 +97,8 @@ export default function HomePage() {
             </span>
           </Link>
           <Link
-            href="/verses"
-            className="flex flex-col gap-3 rounded-3xl bg-card p-4 ring-1 ring-foreground/8 transition-transform active:scale-[0.97]"
-          >
-            <span className="flex size-10 items-center justify-center rounded-2xl bg-gold/25 text-gold-foreground dark:text-gold">
-              <LibraryIcon className="size-5" />
-            </span>
-            <span className="flex flex-col">
-              <span className="font-semibold">Verses</span>
-              <span className="text-xs text-muted-foreground">
-                {verseCount} from the church
-              </span>
-            </span>
-          </Link>
-          <Link
             href="/heart-check"
-            className="flex flex-col gap-3 rounded-3xl bg-card p-4 ring-1 ring-foreground/8 transition-transform active:scale-[0.97]"
+            className="col-span-2 flex items-center gap-3 rounded-3xl bg-card p-4 ring-1 ring-foreground/8 transition-transform active:scale-[0.97]"
           >
             <span className="flex size-10 items-center justify-center rounded-2xl bg-brand-red/12 text-brand-red">
               <HeartIcon className="size-5" />

@@ -28,11 +28,11 @@ function VerseLibrary({
     )
 
   return (
-    <main className="mx-auto flex w-full max-w-2xl flex-col gap-4 py-5">
+    <div className="flex flex-col gap-4">
       <div
         role="radiogroup"
         aria-label="Filter by tag"
-        className="flex [scrollbar-width:none] gap-2 overflow-x-auto px-4 pb-1"
+        className="-mx-4 flex [scrollbar-width:none] gap-2 overflow-x-auto px-4 pb-1"
       >
         <TagChip selected={tag === null} onClick={() => setTag(null)}>
           All
@@ -48,7 +48,7 @@ function VerseLibrary({
         ))}
       </div>
 
-      <ul className="flex flex-col gap-3 px-4">
+      <ul className="flex flex-col gap-3">
         {shown.map((verse) => {
           const saved = isSaved(verse)
           return (
@@ -100,7 +100,7 @@ function VerseLibrary({
           )
         })}
       </ul>
-    </main>
+    </div>
   )
 }
 

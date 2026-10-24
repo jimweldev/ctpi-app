@@ -4,6 +4,8 @@ import * as React from "react"
 import {
   CheckIcon,
   DownloadIcon,
+  FileDownIcon,
+  FileUpIcon,
   MonitorIcon,
   MoonIcon,
   ShareIcon,
@@ -23,6 +25,13 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog"
+import { downloadBackup, restoreBackup } from "@/lib/backup"
+import {
+  FONT_SIZES,
+  type FontSize,
+  setFontSize,
+  useFontSize,
+} from "@/lib/font-size"
 import {
   clearHeartCheckAlarms,
   useHeartCheckAlarms,
@@ -77,8 +86,130 @@ function ThemeSelector() {
   )
 }
 
+const fontSizeClassNames: Record<FontSize, string> = {
+  small: "text-sm",
+  default: "text-base",
+  large: "text-xl",
+  xlarge: "text-2xl",
+}
+
+function FontSizeSelector() {
+  const current = useFontSize()
+
+  return (
+    <div
+      role="radiogroup"
+      aria-label="Font size"
+      className="grid grid-cols-4 gap-1 rounded-2xl bg-muted p-1"
+    >
+      {FONT_SIZES.map(({ value, label }) => {
+        const selected = current === value
+        return (
+          <button
+            key={value}
+            type="button"
+            role="radio"
+            aria-checked={selected}
+            onClick={() => setFontSize(value)}
+            className={cn(
+              "flex flex-col items-center justify-end gap-1 rounded-xl py-3 text-xs font-medium text-muted-foreground transition-colors",
+              selected && "bg-background text-foreground shadow-sm"
+            )}
+          >
+            <span
+              aria-hidden
+              className={cn(
+                "leading-none font-semibold",
+                fontSizeClassNames[value]
+              )}
+            >
+              A
+            </span>
+            {label}
+          </button>
+        )
+      })}
+    </div>
+  )
+}
+
 const rowClassName =
   "flex items-center gap-3 rounded-2xl bg-card p-4 text-left ring-1 ring-foreground/8"
+
+function BackupControls() {
+  const fileInput = React.useRef<HTMLInputElement>(null)
+  const [status, setStatus] = React.useState<{
+    error: boolean
+    message: string
+  } | null>(null)
+
+  async function onFile(event: React.ChangeEvent<HTMLInputElement>) {
+    const file = event.target.files?.[0]
+    event.target.value = ""
+    if (!file) return
+    try {
+      const added = await restoreBackup(file)
+      const parts = [
+        countLabel(added.memoryVerses, "memory verse"),
+        countLabel(added.heartChecks, "heart check"),
+        countLabel(added.heartCheckAlarms, "alarm"),
+      ]
+      setStatus({ error: false, message: `Imported ${parts.join(", ")}.` })
+    } catch (error) {
+      setStatus({
+        error: true,
+        message:
+          error instanceof Error ? error.message : "Couldn't import that file.",
+      })
+    }
+  }
+
+  return (
+    <>
+      <div className="grid grid-cols-2 gap-3">
+        <button
+          type="button"
+          onClick={() => {
+            downloadBackup()
+            setStatus(null)
+          }}
+          className={cn(rowClassName, "transition-colors active:bg-muted")}
+        >
+          <FileDownIcon className="size-5 text-primary" />
+          <span className="font-medium">Export</span>
+        </button>
+        <button
+          type="button"
+          onClick={() => fileInput.current?.click()}
+          className={cn(rowClassName, "transition-colors active:bg-muted")}
+        >
+          <FileUpIcon className="size-5 text-primary" />
+          <span className="font-medium">Import</span>
+        </button>
+        <input
+          ref={fileInput}
+          type="file"
+          accept="application/json,.json"
+          onChange={onFile}
+          className="hidden"
+        />
+      </div>
+      <p
+        aria-live="polite"
+        className={cn(
+          "px-1 text-sm empty:hidden",
+          status?.error ? "text-destructive" : "text-muted-foreground"
+        )}
+      >
+        {status?.message}
+      </p>
+    </>
+  )
+}
+
+function countLabel(count: number, noun: string) {
+  return `${count} ${noun}${count === 1 ? "" : "s"}`
+}
 
 function InstallAppButton() {
   const state = useInstallState()
@@ -186,4 +317,10 @@ function ClearDataButton() {
   )
 }
 
-export { ClearDataButton, InstallAppButton, ThemeSelector }
+export {
+  BackupControls,
+  ClearDataButton,
+  FontSizeSelector,
+  InstallAppButton,
+  ThemeSelector,
+}

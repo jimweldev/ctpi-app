@@ -5,6 +5,7 @@ import "./globals.css"
 import { BottomNav } from "@/components/bottom-nav"
 import { ServiceWorkerRegister } from "@/components/service-worker-register"
 import { ThemeProvider } from "@/components/theme-provider"
+import { fontSizeScript } from "@/lib/font-size-script"
 import { cn } from "@/lib/utils"
 
 const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
@@ -56,6 +57,10 @@ export default function RootLayout({
         inter.variable
       )}
     >
+      <head>
+        {/* Apply the saved font size before first paint (no size flash). */}
+        <script dangerouslySetInnerHTML={{ __html: fontSizeScript }} />
+      </head>
       <body className="min-h-svh bg-background pb-[calc(4rem+env(safe-area-inset-bottom))]">
         <ThemeProvider>
           {children}

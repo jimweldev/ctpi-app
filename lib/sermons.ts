@@ -9,9 +9,11 @@ export type Verse = {
 
 export type Block =
   | Verse
+  /**
+   * Shown as written: line breaks kept, a blank line starts a new paragraph,
+   * `**bold**`, `*italic*`, and `->centered paragraph<-`.
+   */
   | { type: "note"; text: string }
-  | { type: "text"; text: string }
-  | { type: "declaration"; lines: string[] }
   | { type: "point"; title: string; content: Block[] }
   | { type: "section"; title: string; content: Block[] }
 
@@ -31,6 +33,8 @@ export type Sermon = {
   date: string
   speaker?: string
   content: Block[]
+  /** Closing blocks after the last point, shown in their own tab. */
+  outro?: Block[]
 }
 
 /** A sermon with its series resolved and its position within that series. */
@@ -83,4 +87,18 @@ export function formatSermonDate(date: string) {
     day: "numeric",
     year: "numeric",
   })
+}
+
+/**
+ * Split a sermon into its intro (everything before the first point) and its
+ * points, each with the non-point blocks (e.g. a section) that follow it.
+ */
+export function getSermonParts(content: Block[]) {
+  const intro: Block[] = []
+  const points: Block[][] = []
+  for (const block of content) {
+    if (block.type === "point") points.push([block])
+    else (points.at(-1) ?? intro).push(block)
+  }
+  return { intro, points }
 }

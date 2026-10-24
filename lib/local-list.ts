@@ -6,7 +6,7 @@ import { useSyncExternalStore } from "react"
  * A list persisted in `localStorage` under `key`, shared by every component
  * that reads it and kept in sync across tabs.
  */
-export function createLocalList<T>(key: string) {
+export function createLocalList<T extends { id: string }>(key: string) {
   const empty: T[] = []
   const listeners = new Set<() => void>()
   let cache: T[] | null = null
@@ -50,5 +50,13 @@ export function createLocalList<T>(key: string) {
     return useSyncExternalStore(subscribe, read, () => empty)
   }
 
-  return { read, write, useList }
+  /** Add items whose id isn't saved yet; returns how many were added. */
+  function merge(items: T[]) {
+    const ids = new Set(read().map((item) => item.id))
+    const added = items.filter((item) => !ids.has(item.id))
+    if (added.length > 0) write([...read(), ...added])
+    return added.length
+  }
+
+  return { read, write, merge, useList }
 }

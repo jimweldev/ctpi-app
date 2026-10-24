@@ -3,8 +3,8 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
+  BookMarkedIcon,
   BookOpenIcon,
-  BrainIcon,
   HeartIcon,
   HouseIcon,
   SettingsIcon,
@@ -14,7 +14,7 @@ import { cn } from "cn"
 const tabs = [
   { href: "/", label: "Home", icon: HouseIcon },
   { href: "/sermons", label: "Sermons", icon: BookOpenIcon },
-  { href: "/memory-verses", label: "Memory", icon: BrainIcon },
+  { href: "/memory-verses", label: "Verses", icon: BookMarkedIcon },
   { href: "/heart-check", label: "Heart Check", icon: HeartIcon },
   { href: "/settings", label: "Settings", icon: SettingsIcon },
 ]

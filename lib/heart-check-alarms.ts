@@ -22,7 +22,7 @@ export type HeartCheckAlarmInput = Pick<
   "time" | "days" | "date"
 >
 
-const { read, write, useList } = createLocalList<HeartCheckAlarm>(
+const { read, write, merge, useList } = createLocalList<HeartCheckAlarm>(
   "ctpi:heart-check-alarms"
 )
 
@@ -126,4 +126,22 @@ const getMinute = () => Math.floor(Date.now() / 60_000) * 60_000
 /** Current time in ms, floored to the minute; null during server render. */
 export function useNow() {
   return useSyncExternalStore(subscribeToClock, getMinute, () => null)
+}
+
+export const getHeartCheckAlarms = read
+
+/** Add valid alarms from a backup; returns how many were new. */
+export function importHeartCheckAlarms(items: unknown[]) {
+  return merge(items.filter(isHeartCheckAlarm))
+}
+
+function isHeartCheckAlarm(value: unknown): value is HeartCheckAlarm {
+  const alarm = value as HeartCheckAlarm
+  return (
+    typeof alarm?.id === "string" &&
+    /^\d{2}:\d{2}$/.test(alarm.time) &&
+    Array.isArray(alarm.days) &&
+    typeof alarm.enabled === "boolean" &&
+    typeof alarm.createdAt === "number"
+  )
 }

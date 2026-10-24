@@ -1,12 +1,23 @@
 import { BookOpenIcon } from "lucide-react"
+import { cn } from "cn"
 
+import { FormattedText, InlineText } from "@/components/formatted-text"
 import type { Block, Verse } from "@/lib/sermons"
 
-function SermonContent({ blocks }: { blocks: Block[] }) {
-  let pointNumber = 0
+function SermonContent({
+  blocks,
+  pointsBefore = 0,
+  className,
+}: {
+  blocks: Block[]
+  /** Points that came earlier in the sermon, so numbering continues. */
+  pointsBefore?: number
+  className?: string
+}) {
+  let pointNumber = pointsBefore
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className={cn("flex flex-col gap-4", className)}>
       {blocks.map((block, index) => {
         if (block.type === "point") pointNumber++
         return (
@@ -29,19 +40,9 @@ function SermonBlock({
       return <VerseCard verse={block} />
     case "note":
       return (
-        <p className="rounded-r-xl border-l-4 border-gold bg-accent/60 py-3 pr-4 pl-4 text-base font-medium whitespace-pre-line text-foreground">
-          {block.text}
-        </p>
-      )
-    case "text":
-      return <p className="text-base leading-relaxed">{block.text}</p>
-    case "declaration":
-      return (
-        <ul className="flex flex-col gap-1 rounded-2xl bg-hero px-4 py-5 text-center text-xl font-extrabold tracking-wide text-gold uppercase">
-          {block.lines.map((line) => (
-            <li key={line}>{line}</li>
-          ))}
-        </ul>
+        <div className="flex flex-col gap-3 rounded-r-xl border-l-4 border-gold bg-accent/60 py-3 pr-4 pl-4 text-base font-medium text-foreground">
+          <FormattedText text={block.text} />
+        </div>
       )
     case "point":
       return (
@@ -98,7 +99,7 @@ function VerseCard({ verse }: { verse: Omit<Verse, "type"> }) {
                 {v.number}
               </sup>
             )}
-            {v.text}{" "}
+            <InlineText text={v.text} />{" "}
           </span>
         ))}
       </blockquote>

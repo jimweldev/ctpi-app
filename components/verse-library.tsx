@@ -2,8 +2,9 @@
 
 import * as React from "react"
 import { BookmarkCheckIcon, BookmarkPlusIcon } from "lucide-react"
-import { cn } from "cn"
 
+import { FilterChips } from "@/components/filter-chips"
+import { matchesSearch, SearchField } from "@/components/search-field"
 import { Button } from "@/components/ui/button"
 import { addMemoryVerse, useMemoryVerses } from "@/lib/memory-verses"
 import type { ChurchVerse } from "@/lib/verses"
@@ -15,12 +16,21 @@ function VerseLibrary({
   verses: ChurchVerse[]
   tags: string[]
 }) {
-  const [tag, setTag] = React.useState<string | null>(null)
+  const [tag, setTag] = React.useState(ALL)
+  const [query, setQuery] = React.useState("")
   const memoryVerses = useMemoryVerses()
 
-  const shown = tag
-    ? verses.filter((verse) => verse.tags.includes(tag))
-    : verses
+  const shown = verses.filter(
+    (verse) =>
+      (tag === ALL || verse.tags.includes(tag)) &&
+      matchesSearch(
+        query,
+        verse.reference,
+        verse.version,
+        verse.text,
+        ...verse.tags
+      )
+  )
   const isSaved = (verse: ChurchVerse) =>
     memoryVerses.some(
       (saved) =>
@@ -29,24 +39,26 @@ function VerseLibrary({
 
   return (
     <div className="flex flex-col gap-4">
-      <div
-        role="radiogroup"
-        aria-label="Filter by tag"
-        className="-mx-4 flex [scrollbar-width:none] gap-2 overflow-x-auto px-4 pb-1"
-      >
-        <TagChip selected={tag === null} onClick={() => setTag(null)}>
-          All
-        </TagChip>
-        {tags.map((value) => (
-          <TagChip
-            key={value}
-            selected={tag === value}
-            onClick={() => setTag(value)}
-          >
-            {value}
-          </TagChip>
-        ))}
-      </div>
+      <SearchField
+        value={query}
+        onChange={setQuery}
+        placeholder="Search church verses"
+      />
+      <FilterChips
+        label="Filter by tag"
+        options={[
+          { value: ALL, label: "All" },
+          ...tags.map((value) => ({ value, label: capitalize(value) })),
+        ]}
+        value={tag}
+        onChange={setTag}
+      />
+
+      {shown.length === 0 && (
+        <p className="py-8 text-center text-sm text-muted-foreground">
+          No church verses match.
+        </p>
+      )}
 
       <ul className="flex flex-col gap-3">
         {shown.map((verse) => {
@@ -104,29 +116,9 @@ function VerseLibrary({
   )
 }
 
-function TagChip({
-  selected,
-  onClick,
-  children,
-}: {
-  selected: boolean
-  onClick: () => void
-  children: React.ReactNode
-}) {
-  return (
-    <button
-      type="button"
-      role="radio"
-      aria-checked={selected}
-      onClick={onClick}
-      className={cn(
-        "shrink-0 rounded-full bg-muted px-3.5 py-1.5 text-sm font-medium whitespace-nowrap text-muted-foreground capitalize transition-colors",
-        selected && "bg-primary text-primary-foreground"
-      )}
-    >
-      {children}
-    </button>
-  )
-}
+const ALL = "all"
+
+const capitalize = (text: string) =>
+  text.replace(/\b\w/g, (letter) => letter.toUpperCase())
 
 export { VerseLibrary }

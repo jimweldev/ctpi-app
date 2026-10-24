@@ -10,6 +10,7 @@ import {
 } from "lucide-react"
 
 import { PageHeader } from "@/components/page-header"
+import { matchesSearch, SearchField } from "@/components/search-field"
 import { Button } from "@/components/ui/button"
 import {
   Drawer,
@@ -39,6 +40,7 @@ import {
   useMemoryVerses,
 } from "@/lib/memory-verses"
 import type { ChurchVerse } from "@/lib/verses"
+import { getBook, getChapterVerse } from "@/lib/bible-books"
 
 function MemoryVerseList({
   churchVerses,
@@ -49,6 +51,12 @@ function MemoryVerseList({
 }) {
   const verses = useMemoryVerses()
   const [tab, setTab] = React.useState<"mine" | "church">("mine")
+  const [query, setQuery] = React.useState("")
+  const groups = groupByBook(
+    verses.filter((verse) =>
+      matchesSearch(query, verse.reference, verse.version, verse.text)
+    )
+  )
   const [editorOpen, setEditorOpen] = React.useState(false)
   // Changing the key resets the form for each open.
   const [editor, setEditor] = React.useState<{
@@ -64,19 +72,7 @@ function MemoryVerseList({
 
   return (
     <>
-      <PageHeader
-        title="Verses"
-        action={
-          <Button
-            variant="ghost"
-            size="icon"
-            aria-label="Add verse"
-            onClick={() => openEditor()}
-          >
-            <PlusIcon className="size-6 text-primary" />
-          </Button>
-        }
-      />
+      <PageHeader title="Verses" />
       <main className="mx-auto flex w-full max-w-2xl flex-col px-4 py-4">
         <Tabs
           value={tab}
@@ -102,7 +98,7 @@ function MemoryVerseList({
                 <div className="flex flex-col gap-2">
                   <Button onClick={() => openEditor()}>
                     <PlusIcon />
-                    Add verse
+                    Add memory verse
                   </Button>
                   <Button variant="ghost" onClick={() => setTab("church")}>
                     <LibraryIcon />
@@ -111,42 +107,47 @@ function MemoryVerseList({
                 </div>
               </Empty>
             ) : (
-              verses.map((verse) => (
-                <figure
-                  key={verse.id}
-                  className="flex flex-col gap-3 rounded-2xl bg-card p-5 shadow-xs ring-1 ring-foreground/8"
+              <>
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  onClick={() => openEditor()}
                 >
-                  <figcaption className="flex items-center gap-2">
-                    <span className="font-semibold">{verse.reference}</span>
-                    {verse.version && (
-                      <span className="text-xs text-muted-foreground">
-                        {verse.version}
-                      </span>
-                    )}
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      className="ml-auto text-muted-foreground"
-                      aria-label={`Edit ${verse.reference}`}
-                      onClick={() => openEditor(verse)}
+                  <PlusIcon />
+                  Add memory verse
+                </Button>
+                <SearchField
+                  value={query}
+                  onChange={setQuery}
+                  placeholder="Search memory verses"
+                />
+                {groups.length === 0 ? (
+                  <p className="py-8 text-center text-sm text-muted-foreground">
+                    No memory verses match “{query.trim()}”.
+                  </p>
+                ) : (
+                  groups.map((group) => (
+                    <section
+                      key={group.name}
+                      className="flex flex-col gap-3 pt-2"
                     >
-                      <PencilIcon />
-                    </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon-sm"
-                      className="text-muted-foreground"
-                      aria-label={`Delete ${verse.reference}`}
-                      onClick={() => removeMemoryVerse(verse.id)}
-                    >
-                      <Trash2Icon />
-                    </Button>
-                  </figcaption>
-                  <blockquote className="font-serif text-[1.0625rem] leading-relaxed whitespace-pre-line">
-                    {verse.text}
-                  </blockquote>
-                </figure>
-              ))
+                      <h2 className="flex items-baseline gap-2 px-1 text-xs font-medium tracking-widest text-muted-foreground uppercase">
+                        {group.name}
+                        <span className="tracking-normal tabular-nums">
+                          {group.verses.length}
+                        </span>
+                      </h2>
+                      {group.verses.map((verse) => (
+                        <MemoryVerseCard
+                          key={verse.id}
+                          verse={verse}
+                          onEdit={() => openEditor(verse)}
+                        />
+                      ))}
+                    </section>
+                  ))
+                )}
+              </>
             )}
           </TabsContent>
           <TabsContent value="church" className="text-base">
@@ -163,6 +164,70 @@ function MemoryVerseList({
       />
     </>
   )
+}
+
+function MemoryVerseCard({
+  verse,
+  onEdit,
+}: {
+  verse: MemoryVerse
+  onEdit: () => void
+}) {
+  return (
+    <figure className="flex flex-col gap-3 rounded-2xl bg-card p-5 shadow-xs ring-1 ring-foreground/8">
+      <figcaption className="flex items-center gap-2">
+        <span className="font-semibold">{verse.reference}</span>
+        {verse.version && (
+          <span className="text-xs text-muted-foreground">{verse.version}</span>
+        )}
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          className="ml-auto text-muted-foreground"
+          aria-label={`Edit ${verse.reference}`}
+          onClick={onEdit}
+        >
+          <PencilIcon />
+        </Button>
+        <Button
+          variant="ghost"
+          size="icon-sm"
+          className="text-muted-foreground"
+          aria-label={`Delete ${verse.reference}`}
+          onClick={() => removeMemoryVerse(verse.id)}
+        >
+          <Trash2Icon />
+        </Button>
+      </figcaption>
+      <blockquote className="font-serif text-[1.0625rem] leading-relaxed whitespace-pre-line">
+        {verse.text}
+      </blockquote>
+    </figure>
+  )
+}
+
+/** Verses grouped by Bible book in canonical order, sorted by chapter:verse. */
+function groupByBook(verses: MemoryVerse[]) {
+  const groups = new Map<
+    string,
+    { name: string; order: number; verses: MemoryVerse[] }
+  >()
+  for (const verse of verses) {
+    const book = getBook(verse.reference)
+    const group = groups.get(book.name) ?? { ...book, verses: [] }
+    group.verses.push(verse)
+    groups.set(book.name, group)
+  }
+  const position = (verse: MemoryVerse) => {
+    const { chapter, verse: number } = getChapterVerse(verse.reference)
+    return chapter * 1000 + number
+  }
+  return [...groups.values()]
+    .sort((a, b) => a.order - b.order || a.name.localeCompare(b.name))
+    .map((group) => ({
+      ...group,
+      verses: group.verses.sort((a, b) => position(a) - position(b)),
+    }))
 }
 
 function VerseDrawer({

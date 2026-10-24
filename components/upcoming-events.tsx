@@ -10,13 +10,15 @@ import { type ChurchEvent, formatEventDate } from "@/lib/events"
  * Events from today on. Home is prerendered at build time, so past events
  * are filtered here on the device instead of on the server.
  */
-function UpcomingEvents({ events }: { events: ChurchEvent[] }) {
+function useUpcoming(events: ChurchEvent[]) {
   const now = useNow()
   const today = now === null ? null : toDateKey(new Date(now))
-  const upcoming = today
-    ? events.filter((event) => event.date >= today)
-    : events
+  return today ? events.filter((event) => event.date >= today) : events
+}
 
+/** Upcoming events with a heading; renders nothing when there are none. */
+function UpcomingEvents({ events }: { events: ChurchEvent[] }) {
+  const upcoming = useUpcoming(events)
   if (upcoming.length === 0) return null
 
   return (

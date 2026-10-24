@@ -39,7 +39,8 @@ export type Sermon = {
 
 /** A sermon with its series resolved and its position within that series. */
 export type SermonEntry = Sermon & {
-  seriesInfo?: Series & { part: number; total: number }
+  /** `part` counts from the series' first sermon by date. */
+  seriesInfo?: Series & { part: number }
 }
 
 // JSON imports widen string literals, so assert the shape once here.
@@ -54,11 +55,7 @@ const entries: SermonEntry[] = sermons
       .sort((a, b) => a.date.localeCompare(b.date))
     return {
       ...sermon,
-      seriesInfo: {
-        ...info,
-        part: parts.indexOf(sermon) + 1,
-        total: parts.length,
-      },
+      seriesInfo: { ...info, part: parts.indexOf(sermon) + 1 },
     }
   })
   .sort((a, b) => b.date.localeCompare(a.date))
@@ -101,4 +98,36 @@ export function getSermonParts(content: Block[]) {
     else (points.at(-1) ?? intro).push(block)
   }
   return { intro, points }
+}
+
+/** All series, in the order listed in the data. */
+export function getAllSeries() {
+  return series
+}
+
+/**
+ * Everything worth searching in a sermon, flattened to plain text: title,
+ * series, speaker, point and section titles, verse references, and notes.
+ */
+export function getSermonSearchText(sermon: SermonEntry) {
+  const parts = [sermon.title, sermon.seriesInfo?.title, sermon.speaker]
+  const walk = (blocks: Block[]) => {
+    for (const block of blocks) {
+      if (block.type === "verse") parts.push(block.reference)
+      else if (block.type === "note") parts.push(stripFormatting(block.text))
+      else {
+        parts.push(block.title)
+        walk(block.content)
+      }
+    }
+  }
+  walk([...sermon.content, ...(sermon.outro ?? [])])
+  return parts.filter(Boolean).join(" ")
+}
+
+/** Remove the note/verse formatting markers, keeping the words. */
+function stripFormatting(text: string) {
+  return text
+    .replace(/\[([^\]]+)\]\{[^}]+\}/g, "$1")
+    .replace(/\*\*|\*|->|<-/g, "")
 }

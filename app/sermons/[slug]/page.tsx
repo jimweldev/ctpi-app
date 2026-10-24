@@ -93,26 +93,9 @@ export default async function SermonPage(props: PageProps<"/sermons/[slug]">) {
               .join(" · ")}
           </p>
           {seriesInfo && (
-            <div className="mt-1 flex items-center gap-3">
-              <div
-                className="flex flex-1 gap-1"
-                role="img"
-                aria-label={`Part ${seriesInfo.part} of ${seriesInfo.total}`}
-              >
-                {Array.from({ length: seriesInfo.total }, (_, i) => (
-                  <span
-                    key={i}
-                    className={cn(
-                      "h-1 flex-1 rounded-full bg-hero-foreground/20",
-                      i < seriesInfo.part && "bg-gold"
-                    )}
-                  />
-                ))}
-              </div>
-              <span className="text-xs font-semibold opacity-80">
-                Part {seriesInfo.part} of {seriesInfo.total}
-              </span>
-            </div>
+            <span className="mt-1 w-fit rounded-full bg-gold px-2.5 py-1 text-xs font-bold text-gold-foreground">
+              Part {seriesInfo.part}
+            </span>
           )}
         </header>
 

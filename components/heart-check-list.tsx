@@ -12,6 +12,7 @@ import {
 } from "lucide-react"
 import { cn } from "cn"
 
+import { FilterChips } from "@/components/filter-chips"
 import { PageHeader } from "@/components/page-header"
 import { Button } from "@/components/ui/button"
 import {
@@ -49,6 +50,36 @@ import {
   useHeartChecks,
 } from "@/lib/heart-checks"
 
+type DateRange = "7d" | "1m" | "3m" | "all" | "custom"
+
+const DATE_RANGES: { value: DateRange; label: string }[] = [
+  { value: "7d", label: "7 days" },
+  { value: "1m", label: "1 month" },
+  { value: "3m", label: "3 months" },
+  { value: "all", label: "All" },
+  { value: "custom", label: "Custom" },
+]
+
+function monthsBefore(date: Date, months: number) {
+  return new Date(date.getFullYear(), date.getMonth() - months, date.getDate())
+}
+
+/** First "YYYY-MM-DD" included in a preset range, or "" for all time. */
+function rangeStart(range: Exclude<DateRange, "custom">, today: Date) {
+  switch (range) {
+    case "7d":
+      return toDateKey(
+        new Date(today.getFullYear(), today.getMonth(), today.getDate() - 6)
+      )
+    case "1m":
+      return toDateKey(monthsBefore(today, 1))
+    case "3m":
+      return toDateKey(monthsBefore(today, 3))
+    case "all":
+      return ""
+  }
+}
+
 function HeartCheckList() {
   const checks = useHeartChecks()
   const alarms = useHeartCheckAlarms()
@@ -62,6 +93,8 @@ function HeartCheckList() {
   }>({ key: 0, today: "" })
   const [viewing, setViewing] = React.useState<HeartCheck | null>(null)
   const [viewerOpen, setViewerOpen] = React.useState(false)
+  const [range, setRange] = React.useState<DateRange>("1m")
+  const [custom, setCustom] = React.useState({ from: "", to: "" })
 
   /** Open the form to add a heart check, or to edit `check`. */
   function openForm(check?: HeartCheck) {
@@ -85,6 +118,14 @@ function HeartCheckList() {
   const due =
     lastAlarm != null &&
     !checks.some((check) => check.createdAt >= lastAlarm.getTime())
+
+  const { from, to } =
+    range === "custom"
+      ? custom
+      : { from: now === null ? "" : rangeStart(range, new Date(now)), to: "" }
+  const shown = checks.filter(
+    (check) => (!from || check.date >= from) && (!to || check.date <= to)
+  )
 
   return (
     <>
@@ -159,16 +200,72 @@ function HeartCheckList() {
             </div>
           </Empty>
         ) : (
-          checks.map((check) => (
-            <HeartCheckCard
-              key={check.id}
-              check={check}
-              onOpen={() => {
-                setViewing(check)
-                setViewerOpen(true)
+          <>
+            <FilterChips
+              label="Date range"
+              options={DATE_RANGES}
+              value={range}
+              onChange={(next) => {
+                if (next === "custom" && !custom.from) {
+                  const today = new Date()
+                  setCustom({
+                    from: toDateKey(monthsBefore(today, 1)),
+                    to: toDateKey(today),
+                  })
+                }
+                setRange(next)
               }}
             />
-          ))
+            {range === "custom" && (
+              <div className="grid grid-cols-2 gap-3">
+                <label className="flex flex-col gap-1.5 text-sm font-medium">
+                  From
+                  <Input
+                    type="date"
+                    value={custom.from}
+                    max={custom.to || undefined}
+                    onChange={(event) =>
+                      setCustom({ ...custom, from: event.target.value })
+                    }
+                  />
+                </label>
+                <label className="flex flex-col gap-1.5 text-sm font-medium">
+                  To
+                  <Input
+                    type="date"
+                    value={custom.to}
+                    min={custom.from || undefined}
+                    onChange={(event) =>
+                      setCustom({ ...custom, to: event.target.value })
+                    }
+                  />
+                </label>
+              </div>
+            )}
+            <p className="px-1 text-xs text-muted-foreground">
+              Showing {shown.length} of {checks.length} heart{" "}
+              {checks.length === 1 ? "check" : "checks"}
+            </p>
+            {shown.length === 0 ? (
+              <div className="flex flex-col items-center gap-3 py-8 text-center text-sm text-muted-foreground">
+                No heart checks in this date range.
+                <Button variant="secondary" onClick={() => setRange("all")}>
+                  Show all
+                </Button>
+              </div>
+            ) : (
+              shown.map((check) => (
+                <HeartCheckCard
+                  key={check.id}
+                  check={check}
+                  onOpen={() => {
+                    setViewing(check)
+                    setViewerOpen(true)
+                  }}
+                />
+              ))
+            )}
+          </>
         )}
       </main>
       <Drawer open={viewerOpen} onOpenChange={setViewerOpen} showSwipeHandle>

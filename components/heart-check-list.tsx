@@ -3,7 +3,7 @@
 import * as React from "react"
 import Link from "next/link"
 import {
-  AlarmClockIcon,
+  CalendarClockIcon,
   ChevronRightIcon,
   HeartIcon,
   PencilIcon,
@@ -32,13 +32,8 @@ import {
 } from "@/components/ui/empty"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import {
-  useHeartCheckAlarms,
-  formatDay,
-  toDateKey,
-  useNow,
-  wentOffToday,
-} from "@/lib/heart-check-alarms"
+import { useHeartCheckDue } from "@/lib/heart-check-due"
+import { formatDay, toDateKey, useNow } from "@/lib/heart-check-schedules"
 import {
   addHeartCheck,
   getHeartLevel,
@@ -82,7 +77,6 @@ function rangeStart(range: Exclude<DateRange, "custom">, today: Date) {
 
 function HeartCheckList() {
   const checks = useHeartChecks()
-  const alarms = useHeartCheckAlarms()
   const now = useNow()
   const [adding, setAdding] = React.useState(false)
   // Changing the key resets the form for each open.
@@ -106,18 +100,7 @@ function HeartCheckList() {
     setAdding(true)
   }
 
-  // An alarm went off today and no heart check has been done since.
-  const lastAlarm =
-    now === null
-      ? null
-      : alarms
-          .map((alarm) => wentOffToday(alarm, now))
-          .filter((date) => date !== null)
-          .sort((a, b) => b.getTime() - a.getTime())
-          .at(0)
-  const due =
-    lastAlarm != null &&
-    !checks.some((check) => check.createdAt >= lastAlarm.getTime())
+  const due = useHeartCheckDue()
 
   const { from, to } =
     range === "custom"
@@ -136,11 +119,11 @@ function HeartCheckList() {
             <Button
               variant="ghost"
               size="icon"
-              aria-label="Alarms"
+              aria-label="Schedule"
               nativeButton={false}
-              render={<Link href="/heart-check/alarms" />}
+              render={<Link href="/heart-check/schedule" />}
             >
-              <AlarmClockIcon className="size-5 text-primary" />
+              <CalendarClockIcon className="size-5 text-primary" />
             </Button>
             <Button
               variant="ghost"
@@ -160,7 +143,7 @@ function HeartCheckList() {
             onClick={() => openForm()}
             className="flex items-center gap-4 rounded-3xl bg-hero p-5 text-left text-hero-foreground shadow-lg transition-transform active:scale-[0.98]"
           >
-            <AlarmClockIcon className="size-8 shrink-0 text-gold" />
+            <CalendarClockIcon className="size-8 shrink-0 text-gold" />
             <span className="flex flex-col">
               <span className="font-semibold">
                 It&apos;s time for your heart check
@@ -192,10 +175,10 @@ function HeartCheckList() {
               <Button
                 variant="ghost"
                 nativeButton={false}
-                render={<Link href="/heart-check/alarms" />}
+                render={<Link href="/heart-check/schedule" />}
               >
-                <AlarmClockIcon />
-                Set an alarm
+                <CalendarClockIcon />
+                Set a schedule
               </Button>
             </div>
           </Empty>

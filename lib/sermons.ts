@@ -27,6 +27,8 @@ export type Series = {
 export type Sermon = {
   slug: string
   title: string
+  /** Shown under the title, e.g. the armor piece a sermon covers. */
+  subtitle?: string
   /** Slug of the series this sermon belongs to; omit for a standalone sermon. */
   series?: string
   /** ISO date (YYYY-MM-DD); sermons are listed newest first. */
@@ -110,7 +112,12 @@ export function getAllSeries() {
  * series, speaker, point and section titles, verse references, and notes.
  */
 export function getSermonSearchText(sermon: SermonEntry) {
-  const parts = [sermon.title, sermon.seriesInfo?.title, sermon.speaker]
+  const parts = [
+    sermon.title,
+    sermon.subtitle,
+    sermon.seriesInfo?.title,
+    sermon.speaker,
+  ]
   const walk = (blocks: Block[]) => {
     for (const block of blocks) {
       if (block.type === "verse") parts.push(block.reference)

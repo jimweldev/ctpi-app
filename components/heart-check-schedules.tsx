@@ -2,8 +2,9 @@
 
 import * as React from "react"
 import {
-  AlarmClockIcon,
+  CalendarClockIcon,
   CalendarIcon,
+  CalendarPlusIcon,
   PlusIcon,
   Trash2Icon,
 } from "lucide-react"
@@ -28,63 +29,65 @@ import {
 import { Switch } from "@/components/ui/switch"
 import { TimeWheelPicker } from "@/components/wheel-picker"
 import {
-  addHeartCheckAlarm,
+  addHeartCheckSchedule,
+  calendarHref,
   formatDay,
   formatTime,
-  type HeartCheckAlarm,
+  type HeartCheckSchedule,
   nextOccurrence,
-  removeHeartCheckAlarm,
+  removeHeartCheckSchedule,
   toDateKey,
-  updateHeartCheckAlarm,
-  useHeartCheckAlarms,
+  updateHeartCheckSchedule,
+  useHeartCheckSchedules,
   useNow,
-} from "@/lib/heart-check-alarms"
+} from "@/lib/heart-check-schedules"
 
 const WEEKDAYS = ["S", "M", "T", "W", "T", "F", "S"]
 const WEEKDAY_NAMES = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"]
 
-function HeartCheckAlarmList() {
-  const alarms = useHeartCheckAlarms()
+function HeartCheckScheduleList() {
+  const schedules = useHeartCheckSchedules()
   const now = useNow()
   const [editorOpen, setEditorOpen] = React.useState(false)
   // Changing the key remounts the editor with fresh state for each open.
   const [editor, setEditor] = React.useState<{
     key: number
-    alarm?: HeartCheckAlarm
+    schedule?: HeartCheckSchedule
     defaultTime: string
   }>({ key: 0, defaultTime: "06:00" })
 
-  function openEditor(alarm?: HeartCheckAlarm) {
-    // New alarms default to the next full hour, like a phone alarm.
+  function openEditor(schedule?: HeartCheckSchedule) {
+    // New schedules default to the next full hour, like a phone alarm.
     const nextHour = (new Date().getHours() + 1) % 24
     setEditor((current) => ({
       key: current.key + 1,
-      alarm,
+      schedule,
       defaultTime: `${String(nextHour).padStart(2, "0")}:00`,
     }))
     setEditorOpen(true)
   }
 
-  const sorted = [...alarms].sort((a, b) => a.time.localeCompare(b.time))
+  const sorted = [...schedules].sort((a, b) => a.time.localeCompare(b.time))
   const next =
     now === null
       ? null
-      : alarms
-          .map((alarm) => nextOccurrence(alarm, now))
+      : schedules
+          .map((schedule) => nextOccurrence(schedule, now))
           .filter((date) => date !== null)
           .sort((a, b) => a.getTime() - b.getTime())
           .at(0)
+  const calendar = now === null ? null : calendarHref(schedules, now)
 
   return (
     <>
       <PageHeader
-        title="Alarms"
+        title="Schedule"
         back={{ href: "/heart-check", label: "Heart Check" }}
         action={
           <Button
             variant="ghost"
             size="icon"
-            aria-label="Add alarm"
+            aria-label="Add schedule"
             onClick={() => openEditor()}
           >
             <PlusIcon className="size-6 text-primary" />
@@ -92,20 +95,20 @@ function HeartCheckAlarmList() {
         }
       />
       <main className="mx-auto flex w-full max-w-2xl flex-col gap-3 px-4 py-6">
-        {alarms.length === 0 ? (
+        {schedules.length === 0 ? (
           <Empty>
             <EmptyHeader>
               <EmptyMedia variant="icon">
-                <AlarmClockIcon />
+                <CalendarClockIcon />
               </EmptyMedia>
-              <EmptyTitle>No alarms yet</EmptyTitle>
+              <EmptyTitle>No schedules yet</EmptyTitle>
               <EmptyDescription>
                 Set a time to be reminded to do your heart check.
               </EmptyDescription>
             </EmptyHeader>
             <Button onClick={() => openEditor()}>
               <PlusIcon />
-              Add alarm
+              Add schedule
             </Button>
           </Empty>
         ) : (
@@ -113,23 +116,39 @@ function HeartCheckAlarmList() {
             <p className="px-1 pt-2 pb-4 text-center text-xl font-semibold">
               {next && now !== null
                 ? `Heart check ${formatUntil(next.getTime() - now)}`
-                : "All alarms are off"}
+                : "All schedules are off"}
             </p>
-            {sorted.map((alarm) => (
-              <AlarmCard
-                key={alarm.id}
-                alarm={alarm}
-                onEdit={() => openEditor(alarm)}
+            {sorted.map((schedule) => (
+              <ScheduleCard
+                key={schedule.id}
+                schedule={schedule}
+                onEdit={() => openEditor(schedule)}
               />
             ))}
+            {calendar && (
+              <div className="flex flex-col items-center gap-2 pt-4 text-center">
+                <Button
+                  variant="secondary"
+                  nativeButton={false}
+                  render={<a href={calendar} />}
+                >
+                  <CalendarPlusIcon />
+                  Add to my calendar
+                </Button>
+                <p className="max-w-xs text-xs text-muted-foreground">
+                  Your phone&apos;s calendar reminds you even when the app is
+                  closed. Add again after changing your schedules.
+                </p>
+              </div>
+            )}
           </>
         )}
       </main>
       <Drawer open={editorOpen} onOpenChange={setEditorOpen} showSwipeHandle>
         <DrawerContent>
-          <AlarmEditor
+          <ScheduleEditor
             key={editor.key}
-            alarm={editor.alarm}
+            schedule={editor.schedule}
             defaultTime={editor.defaultTime}
             now={now}
             onDone={() => setEditorOpen(false)}
@@ -140,24 +159,24 @@ function HeartCheckAlarmList() {
   )
 }
 
-function AlarmCard({
-  alarm,
+function ScheduleCard({
+  schedule,
   onEdit,
 }: {
-  alarm: HeartCheckAlarm
+  schedule: HeartCheckSchedule
   onEdit: () => void
 }) {
-  const { clock, period } = formatTime(alarm.time)
+  const { clock, period } = formatTime(schedule.time)
 
   return (
     <article className="flex items-center gap-3 rounded-3xl bg-card p-5 shadow-xs ring-1 ring-foreground/8">
       <button
         type="button"
         onClick={onEdit}
-        aria-label={`Edit ${clock} ${period} alarm`}
+        aria-label={`Edit ${clock} ${period} schedule`}
         className={cn(
           "flex flex-1 items-baseline gap-1.5 text-left transition-opacity active:opacity-60",
-          !alarm.enabled && "opacity-45"
+          !schedule.enabled && "opacity-45"
         )}
       >
         <span className="text-sm font-medium">{period}</span>
@@ -165,41 +184,41 @@ function AlarmCard({
           {clock}
         </span>
       </button>
-      <ScheduleSummary
-        alarm={alarm}
-        className={cn(!alarm.enabled && "opacity-45")}
+      <RepeatSummary
+        schedule={schedule}
+        className={cn(!schedule.enabled && "opacity-45")}
       />
       <Switch
-        checked={alarm.enabled}
+        checked={schedule.enabled}
         onCheckedChange={(enabled) =>
-          updateHeartCheckAlarm(alarm.id, { enabled })
+          updateHeartCheckSchedule(schedule.id, { enabled })
         }
-        aria-label={alarm.enabled ? "Turn off" : "Turn on"}
+        aria-label={schedule.enabled ? "Turn off" : "Turn on"}
         className="ml-1"
       />
     </article>
   )
 }
 
-/** Weekday letters for a repeating alarm, or the date of a one-time one. */
-function ScheduleSummary({
-  alarm,
+/** Weekday letters for a repeating schedule, or the date of a one-time one. */
+function RepeatSummary({
+  schedule,
   className,
 }: {
-  alarm: HeartCheckAlarm
+  schedule: HeartCheckSchedule
   className?: string
 }) {
-  if (alarm.days.length === 0) {
+  if (schedule.days.length === 0) {
     return (
       <span className={cn("text-xs text-muted-foreground", className)}>
-        {alarm.date ? formatDay(alarm.date) : null}
+        {schedule.date ? formatDay(schedule.date) : null}
       </span>
     )
   }
 
   return (
     <span
-      aria-label={`Repeats every ${formatRepeat(alarm.days)}`}
+      aria-label={`Repeats every ${formatRepeat(schedule.days)}`}
       className={cn("flex gap-0.5 text-[0.6875rem] font-medium", className)}
     >
       {WEEKDAYS.map((letter, day) => (
@@ -208,7 +227,7 @@ function ScheduleSummary({
           aria-hidden
           className={cn(
             "w-2.5 text-center text-muted-foreground/40",
-            alarm.days.includes(day) &&
+            schedule.days.includes(day) &&
               (day === 0 ? "text-brand-red" : "text-primary dark:text-gold")
           )}
         >
@@ -219,22 +238,22 @@ function ScheduleSummary({
   )
 }
 
-/** Samsung-style alarm editor: time wheels, then a date or repeat days. */
-function AlarmEditor({
-  alarm,
+/** Schedule editor, set like a Samsung alarm: time wheels, then a date or repeat days. */
+function ScheduleEditor({
+  schedule,
   defaultTime,
   now,
   onDone,
 }: {
-  alarm?: HeartCheckAlarm
+  schedule?: HeartCheckSchedule
   defaultTime: string
   now: number | null
   onDone: () => void
 }) {
-  const [time, setTime] = React.useState(alarm?.time ?? defaultTime)
-  const [days, setDays] = React.useState(alarm?.days ?? [])
-  // A one-time alarm without a picked date goes off the next time it can.
-  const [date, setDate] = React.useState<string | null>(alarm?.date ?? null)
+  const [time, setTime] = React.useState(schedule?.time ?? defaultTime)
+  const [days, setDays] = React.useState(schedule?.days ?? [])
+  // A one-time schedule without a picked date is due the next time it can.
+  const [date, setDate] = React.useState<string | null>(schedule?.date ?? null)
   const dateInput = React.useRef<HTMLInputElement>(null)
 
   const today = now === null ? null : toDateKey(new Date(now))
@@ -255,15 +274,16 @@ function AlarmEditor({
       days,
       date: days.length > 0 ? undefined : (date ?? autoDate(time, Date.now())),
     }
-    if (alarm) updateHeartCheckAlarm(alarm.id, { ...input, enabled: true })
-    else addHeartCheckAlarm(input)
+    if (schedule)
+      updateHeartCheckSchedule(schedule.id, { ...input, enabled: true })
+    else addHeartCheckSchedule(input)
     onDone()
   }
 
   return (
     <div className="flex min-h-0 flex-col">
       <DrawerHeader className="sr-only">
-        <DrawerTitle>{alarm ? "Edit alarm" : "Add alarm"}</DrawerTitle>
+        <DrawerTitle>{schedule ? "Edit schedule" : "Add schedule"}</DrawerTitle>
       </DrawerHeader>
       <div className="flex flex-col gap-5 overflow-y-auto p-4">
         <TimeWheelPicker value={time} onChange={setTime} />
@@ -329,17 +349,17 @@ function AlarmEditor({
           </div>
         </div>
 
-        {alarm && (
+        {schedule && (
           <Button
             variant="ghost"
             className="self-center text-destructive"
             onClick={() => {
-              removeHeartCheckAlarm(alarm.id)
+              removeHeartCheckSchedule(schedule.id)
               onDone()
             }}
           >
             <Trash2Icon />
-            Delete alarm
+            Delete schedule
           </Button>
         )}
       </div>
@@ -399,4 +419,4 @@ function formatUntil(ms: number) {
   return parts.length > 0 ? `in ${parts.join(" ")}` : "in less than a minute"
 }
 
-export { HeartCheckAlarmList }
+export { HeartCheckScheduleList }

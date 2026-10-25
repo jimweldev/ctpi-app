@@ -9,6 +9,7 @@ import {
 import { cn } from "cn"
 
 import { HeartCheckCount } from "@/components/heart-check-count"
+import { HeartCheckDueCard } from "@/components/heart-check-due-card"
 import { MemoryVerseCount } from "@/components/memory-verse-count"
 import { UpcomingEvents } from "@/components/upcoming-events"
 import { getAllEvents } from "@/lib/events"
@@ -40,6 +41,8 @@ export default function HomePage() {
       </header>
 
       <main className="mx-auto -mt-10 flex w-full max-w-2xl flex-col gap-6 px-4 pb-6">
+        <HeartCheckDueCard />
+
         {latest && (
           <Link
             href={`/sermons/${latest.slug}`}

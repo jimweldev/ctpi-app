@@ -1,5 +1,5 @@
 /** The 66 books in canonical order. */
-const BOOKS = [
+export const BIBLE_BOOKS = [
   "Genesis",
   "Exodus",
   "Leviticus",
@@ -68,38 +68,32 @@ const BOOKS = [
   "Revelation",
 ]
 
-/** Other spellings people type, mapped to the names above. */
-const ALIASES: Record<string, string> = {
-  psalm: "Psalms",
-  "song of solomon": "Song of Songs",
-  revelations: "Revelation",
-}
-
-const normalize = (name: string) =>
-  name.toLowerCase().replace(/\s+/g, " ").trim()
-
-const byName = new Map(BOOKS.map((name, index) => [normalize(name), index]))
-
-// "1 John" in "1 John 3:16": an optional 1-3, then everything up to a number.
-const BOOK_PREFIX = /^(?:[1-3]\s*)?[^\d]+/
+/** Common translations, by the abbreviation stored with a verse. */
+export const BIBLE_VERSIONS = [
+  { value: "NIV", label: "New International Version" },
+  { value: "NLT", label: "New Living Translation" },
+  { value: "ESV", label: "English Standard Version" },
+  { value: "KJV", label: "King James Version" },
+  { value: "NKJV", label: "New King James Version" },
+  { value: "NASB", label: "New American Standard Bible" },
+  { value: "CSB", label: "Christian Standard Bible" },
+  { value: "CEV", label: "Contemporary English Version" },
+  { value: "AMP", label: "Amplified Bible" },
+  { value: "MSG", label: "The Message" },
+  { value: "NRSV", label: "New Revised Standard Version" },
+  { value: "GNT", label: "Good News Translation" },
+  { value: "TLB", label: "The Living Bible" },
+  { value: "MBBTAG", label: "Magandang Balita Biblia" },
+  { value: "ASND", label: "Ang Salita ng Dios" },
+  { value: "ADB", label: "Ang Dating Biblia" },
+]
 
 /**
- * The book a reference like "1 John 3:16" or "psalm 23" is from, with its
- * position in the Bible (`order`). Unknown books keep the typed name and
- * sort after Revelation.
+ * Split "1 John 3:16" into its book ("1 John") and passage ("3:16"). A
+ * reference with no passage is all book.
  */
-export function getBook(reference: string) {
-  const typed = (reference.trim().match(BOOK_PREFIX)?.[0] ?? reference).trim()
-  const key = normalize(typed).replace(/^([1-3])(?=\S)/, "$1 ")
-  const order = byName.get(normalize(ALIASES[key] ?? key))
-  return order === undefined
-    ? { name: typed, order: BOOKS.length }
-    : { name: BOOKS[order], order }
-}
-
-/** Chapter and first verse numbers, for sorting within a book. */
-export function getChapterVerse(reference: string) {
-  const rest = reference.trim().replace(BOOK_PREFIX, "")
-  const [, chapter = "0", verse = "0"] = rest.match(/^(\d+)(?::(\d+))?/) ?? []
-  return { chapter: Number(chapter), verse: Number(verse) }
+export function splitReference(reference: string) {
+  const [, book = reference, passage = ""] =
+    reference.trim().match(/^(.+?)\s+(\d[\d:,.\-–\s]*)$/) ?? []
+  return { book: book.trim(), passage: passage.trim() }
 }

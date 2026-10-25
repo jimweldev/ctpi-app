@@ -33,9 +33,9 @@ import {
   useFontSize,
 } from "@/lib/font-size"
 import {
-  clearHeartCheckAlarms,
-  useHeartCheckAlarms,
-} from "@/lib/heart-check-alarms"
+  clearHeartCheckSchedules,
+  useHeartCheckSchedules,
+} from "@/lib/heart-check-schedules"
 import { clearHeartChecks, useHeartChecks } from "@/lib/heart-checks"
 import { promptInstall, useInstallState } from "@/lib/install-prompt"
 import { clearMemoryVerses, useMemoryVerses } from "@/lib/memory-verses"
@@ -152,7 +152,7 @@ function BackupControls() {
       const parts = [
         countLabel(added.memoryVerses, "memory verse"),
         countLabel(added.heartChecks, "heart check"),
-        countLabel(added.heartCheckAlarms, "alarm"),
+        countLabel(added.heartCheckSchedules, "schedule"),
       ]
       setStatus({ error: false, message: `Imported ${parts.join(", ")}.` })
     } catch (error) {
@@ -263,8 +263,8 @@ function InstallAppButton() {
 function ClearDataButton() {
   const verseCount = useMemoryVerses().length
   const checkCount = useHeartChecks().length
-  const alarmCount = useHeartCheckAlarms().length
-  const count = verseCount + checkCount + alarmCount
+  const scheduleCount = useHeartCheckSchedules().length
+  const count = verseCount + checkCount + scheduleCount
   const [open, setOpen] = React.useState(false)
 
   return (
@@ -292,9 +292,9 @@ function ClearDataButton() {
             <AlertDialogDescription>
               This removes {verseCount} memory{" "}
               {verseCount === 1 ? "verse" : "verses"}, {checkCount} heart{" "}
-              {checkCount === 1 ? "check" : "checks"} and {alarmCount}{" "}
-              {alarmCount === 1 ? "alarm" : "alarms"} from this device. This
-              can&apos;t be undone.
+              {checkCount === 1 ? "check" : "checks"} and {scheduleCount}{" "}
+              {scheduleCount === 1 ? "schedule" : "schedules"} from this device.
+              This can&apos;t be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -304,7 +304,7 @@ function ClearDataButton() {
               onClick={() => {
                 clearMemoryVerses()
                 clearHeartChecks()
-                clearHeartCheckAlarms()
+                clearHeartCheckSchedules()
                 setOpen(false)
               }}
             >

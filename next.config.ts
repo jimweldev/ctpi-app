@@ -2,9 +2,15 @@ import type { NextConfig } from "next"
 
 const nextConfig: NextConfig = {
   async redirects() {
-    // Church verses moved into a tab on Memory Verses.
     return [
+      // Church verses moved into a tab on Memory Verses.
       { source: "/verses", destination: "/memory-verses", permanent: true },
+      // Heart check alarms were renamed to schedules.
+      {
+        source: "/heart-check/alarms",
+        destination: "/heart-check/schedule",
+        permanent: true,
+      },
     ]
   },
   async headers() {

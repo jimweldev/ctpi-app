@@ -1,14 +1,18 @@
 import * as React from "react"
 import { cn } from "cn"
 
-/** Styles usable in `[text]{style style}` spans, e.g. `{underline blue}`. */
+/**
+ * Styles usable in `[text]{style style}` spans, e.g. `{blue}`. `blue` and
+ * `gold` are the two key-word highlights, in theme colors: `blue` for the
+ * first emphasis, `gold` for a second one next to it.
+ */
 const SPAN_STYLES: Record<string, string> = {
+  blue: "font-bold text-primary underline decoration-primary/50 decoration-2 underline-offset-4",
+  gold: "font-bold text-gold-text underline decoration-gold-text/60 decoration-2 underline-offset-4",
   bold: "font-bold",
   italic: "italic",
   underline: "underline decoration-2 underline-offset-4",
   highlight: "rounded-sm bg-gold/35 box-decoration-clone px-0.5",
-  blue: "text-sky-700 dark:text-sky-300",
-  gold: "text-amber-700 dark:text-gold",
   red: "text-brand-red",
 }
 
@@ -17,8 +21,8 @@ const INLINE = /(\[[^\]]+\]\{[^}]+\}|\*\*[^*]+\*\*|\*[^*]+\*)/
 
 /**
  * Inline formatting as written: `**bold**`, `*italic*`, and
- * `[text]{styles}` spans with any of bold, italic, underline, highlight,
- * blue, gold, red. Spans can hold bold and italic inside.
+ * `[text]{styles}` spans with any of blue, gold, bold, italic,
+ * underline, highlight, red. Spans can hold bold and italic inside.
  */
 function InlineText({ text }: { text: string }) {
   return text.split(INLINE).map((part, index) => {

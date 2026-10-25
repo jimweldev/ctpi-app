@@ -12,6 +12,7 @@ export default function SermonsPage() {
   const sermons: SermonListItem[] = getAllSermons().map((sermon) => ({
     slug: sermon.slug,
     title: sermon.title,
+    subtitle: sermon.subtitle,
     date: sermon.date,
     series: sermon.seriesInfo && {
       slug: sermon.seriesInfo.slug,

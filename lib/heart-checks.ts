@@ -2,7 +2,7 @@
 
 import * as React from "react"
 
-import { toDateKey } from "@/lib/heart-check-alarms"
+import { toDateKey } from "@/lib/heart-check-schedules"
 import { createLocalList } from "@/lib/local-list"
 
 /** A self-check of where your heart is, at one moment. */

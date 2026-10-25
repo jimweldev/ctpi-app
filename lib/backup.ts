@@ -1,9 +1,9 @@
 "use client"
 
 import {
-  getHeartCheckAlarms,
-  importHeartCheckAlarms,
-} from "@/lib/heart-check-alarms"
+  getHeartCheckSchedules,
+  importHeartCheckSchedules,
+} from "@/lib/heart-check-schedules"
 import { getHeartChecks, importHeartChecks } from "@/lib/heart-checks"
 import { getMemoryVerses, importMemoryVerses } from "@/lib/memory-verses"
 
@@ -19,7 +19,7 @@ export function downloadBackup() {
     exportedAt: new Date().toISOString(),
     memoryVerses: getMemoryVerses(),
     heartChecks: getHeartChecks(),
-    heartCheckAlarms: getHeartCheckAlarms(),
+    heartCheckSchedules: getHeartCheckSchedules(),
   }
   const blob = new Blob([JSON.stringify(backup, null, 2)], {
     type: "application/json",
@@ -50,6 +50,9 @@ export async function restoreBackup(file: File) {
   return {
     memoryVerses: importMemoryVerses(list(backup.memoryVerses)),
     heartChecks: importHeartChecks(list(backup.heartChecks)),
-    heartCheckAlarms: importHeartCheckAlarms(list(backup.heartCheckAlarms)),
+    heartCheckSchedules: importHeartCheckSchedules(
+      // Backups made before the rename call these alarms.
+      list(backup.heartCheckSchedules ?? backup.heartCheckAlarms)
+    ),
   }
 }

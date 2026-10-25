@@ -1,5 +1,5 @@
 // Bump CACHE_VERSION to drop old caches after changing what gets precached.
-const CACHE_VERSION = "v3"
+const CACHE_VERSION = "v4"
 const CACHE_NAME = `ctpi-${CACHE_VERSION}`
 const OFFLINE_URL = "/offline.html"
 const PRECACHE_URLS = [
@@ -15,7 +15,7 @@ const PRECACHE_PAGES = [
   "/sermons",
   "/memory-verses",
   "/heart-check",
-  "/heart-check/alarms",
+  "/heart-check/schedule",
   "/settings",
 ]
 
@@ -103,6 +103,9 @@ self.addEventListener("fetch", (event) => {
 
   const url = new URL(request.url)
   if (url.origin !== self.location.origin) return
+
+  // Calendar files are built per request; never serve a stale one.
+  if (url.pathname.endsWith(".ics")) return
 
   // Pages: network first so content stays fresh, cached copy when offline.
   if (request.mode === "navigate") {

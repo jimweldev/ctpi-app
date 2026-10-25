@@ -3,7 +3,7 @@
 import Image from "next/image"
 import { CalendarIcon } from "lucide-react"
 
-import { toDateKey, useNow } from "@/lib/heart-check-alarms"
+import { toDateKey, useNow } from "@/lib/heart-check-schedules"
 import { type ChurchEvent, formatEventDate } from "@/lib/events"
 
 /**

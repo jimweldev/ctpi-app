@@ -84,6 +84,9 @@ export default async function SermonPage(props: PageProps<"/sermons/[slug]">) {
             </p>
           )}
           <h2 className="text-3xl leading-tight font-bold">{sermon.title}</h2>
+          {sermon.subtitle && (
+            <p className="-mt-1 text-lg font-semibold">{sermon.subtitle}</p>
+          )}
           {seriesInfo?.subtitle && (
             <p className="opacity-80">{seriesInfo.subtitle}</p>
           )}

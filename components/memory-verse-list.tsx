@@ -1,16 +1,24 @@
 "use client"
 
 import * as React from "react"
+import { move } from "@dnd-kit/helpers"
+import { DragDropProvider } from "@dnd-kit/react"
+import { useSortable } from "@dnd-kit/react/sortable"
 import {
   BrainIcon,
+  ChevronRightIcon,
+  GripVerticalIcon,
   LibraryIcon,
   PencilIcon,
   PlusIcon,
   Trash2Icon,
 } from "lucide-react"
 
+import { FilterChips } from "@/components/filter-chips"
 import { PageHeader } from "@/components/page-header"
 import { matchesSearch, SearchField } from "@/components/search-field"
+import { SuggestInput } from "@/components/suggest-input"
+import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   Drawer,
@@ -34,13 +42,18 @@ import { Textarea } from "@/components/ui/textarea"
 import { VerseLibrary } from "@/components/verse-library"
 import {
   addMemoryVerse,
+  getStatus,
+  MEMORY_STATUSES,
+  type MemoryStatus,
   type MemoryVerse,
   removeMemoryVerse,
+  reorderMemoryVerses,
   updateMemoryVerse,
   useMemoryVerses,
 } from "@/lib/memory-verses"
+import { BIBLE_BOOKS, BIBLE_VERSIONS, splitReference } from "@/lib/bible-books"
+import { cn } from "@/lib/utils"
 import type { ChurchVerse } from "@/lib/verses"
-import { getBook, getChapterVerse } from "@/lib/bible-books"
 
 function MemoryVerseList({
   churchVerses,
@@ -52,10 +65,12 @@ function MemoryVerseList({
   const verses = useMemoryVerses()
   const [tab, setTab] = React.useState<"mine" | "church">("mine")
   const [query, setQuery] = React.useState("")
-  const groups = groupByBook(
-    verses.filter((verse) =>
+  const [status, setStatus] = React.useState<MemoryStatus | "all">("all")
+  const filtering = query.trim() !== "" || status !== "all"
+  const shown = verses.filter(
+    (verse) =>
+      (status === "all" || getStatus(verse) === status) &&
       matchesSearch(query, verse.reference, verse.version, verse.text)
-    )
   )
   const [editorOpen, setEditorOpen] = React.useState(false)
   // Changing the key resets the form for each open.
@@ -64,15 +79,39 @@ function MemoryVerseList({
     verse?: MemoryVerse
   }>({ key: 0 })
 
+  const [viewerOpen, setViewerOpen] = React.useState(false)
+  const [viewingId, setViewingId] = React.useState<string>()
+  // Read from the list so edits show up while the drawer is open.
+  const viewing = verses.find((verse) => verse.id === viewingId)
+
   /** Open the form to add a verse, or to edit `verse`. */
   function openEditor(verse?: MemoryVerse) {
     setEditor((current) => ({ key: current.key + 1, verse }))
     setEditorOpen(true)
   }
 
+  function openViewer(verse: MemoryVerse) {
+    setViewingId(verse.id)
+    setViewerOpen(true)
+  }
+
   return (
     <>
-      <PageHeader title="Verses" />
+      <PageHeader
+        title="Verses"
+        action={
+          tab === "mine" && (
+            <Button
+              variant="ghost"
+              size="icon"
+              aria-label="Add memory verse"
+              onClick={() => openEditor()}
+            >
+              <PlusIcon className="size-6 text-primary" />
+            </Button>
+          )
+        }
+      />
       <main className="mx-auto flex w-full max-w-2xl flex-col px-4 py-4">
         <Tabs
           value={tab}
@@ -108,44 +147,51 @@ function MemoryVerseList({
               </Empty>
             ) : (
               <>
-                <Button
-                  variant="secondary"
-                  size="lg"
-                  onClick={() => openEditor()}
-                >
-                  <PlusIcon />
-                  Add memory verse
-                </Button>
                 <SearchField
                   value={query}
                   onChange={setQuery}
                   placeholder="Search memory verses"
                 />
-                {groups.length === 0 ? (
+                <FilterChips
+                  label="Filter by status"
+                  options={[
+                    { value: "all", label: "All" },
+                    ...MEMORY_STATUSES.map((option) => ({
+                      value: option.value,
+                      label: `${option.label} ${
+                        verses.filter(
+                          (verse) => getStatus(verse) === option.value
+                        ).length
+                      }`,
+                    })),
+                  ]}
+                  value={status}
+                  onChange={setStatus}
+                />
+                {shown.length === 0 ? (
                   <p className="py-8 text-center text-sm text-muted-foreground">
-                    No memory verses match “{query.trim()}”.
+                    {query.trim()
+                      ? `No memory verses match “${query.trim()}”.`
+                      : "No memory verses with this status."}
                   </p>
                 ) : (
-                  groups.map((group) => (
-                    <section
-                      key={group.name}
-                      className="flex flex-col gap-3 pt-2"
-                    >
-                      <h2 className="flex items-baseline gap-2 px-1 text-xs font-medium tracking-widest text-muted-foreground uppercase">
-                        {group.name}
-                        <span className="tracking-normal tabular-nums">
-                          {group.verses.length}
-                        </span>
-                      </h2>
-                      {group.verses.map((verse) => (
-                        <MemoryVerseCard
-                          key={verse.id}
-                          verse={verse}
-                          onEdit={() => openEditor(verse)}
-                        />
-                      ))}
-                    </section>
-                  ))
+                  <DragDropProvider
+                    onDragEnd={(event) => {
+                      if (event.canceled) return
+                      reorderMemoryVerses(move(verses, event))
+                    }}
+                  >
+                    {shown.map((verse, index) => (
+                      <MemoryVerseCard
+                        key={verse.id}
+                        verse={verse}
+                        index={index}
+                        // Filters hide verses, so only reorder the full list.
+                        sortable={!filtering}
+                        onOpen={() => openViewer(verse)}
+                      />
+                    ))}
+                  </DragDropProvider>
                 )}
               </>
             )}
@@ -155,6 +201,15 @@ function MemoryVerseList({
           </TabsContent>
         </Tabs>
       </main>
+      <VerseViewer
+        verse={viewing}
+        open={viewerOpen && viewing !== undefined}
+        onOpenChange={setViewerOpen}
+        onEdit={() => {
+          setViewerOpen(false)
+          if (viewing) openEditor(viewing)
+        }}
+      />
       <VerseDrawer
         key={editor.key}
         verse={editor.verse}
@@ -168,67 +223,150 @@ function MemoryVerseList({
 
 function MemoryVerseCard({
   verse,
-  onEdit,
+  index,
+  sortable,
+  onOpen,
 }: {
   verse: MemoryVerse
-  onEdit: () => void
+  index: number
+  sortable: boolean
+  onOpen: () => void
 }) {
+  const { ref, handleRef, isDragging } = useSortable({
+    id: verse.id,
+    index,
+    disabled: !sortable,
+  })
+
   return (
-    <figure className="flex flex-col gap-3 rounded-2xl bg-card p-5 shadow-xs ring-1 ring-foreground/8">
-      <figcaption className="flex items-center gap-2">
-        <span className="font-semibold">{verse.reference}</span>
-        {verse.version && (
-          <span className="text-xs text-muted-foreground">{verse.version}</span>
-        )}
+    <div
+      ref={ref}
+      className={cn(
+        "flex items-center rounded-2xl bg-card shadow-xs ring-1 ring-foreground/8",
+        isDragging && "z-10 shadow-lg ring-primary/40"
+      )}
+    >
+      {sortable && (
         <Button
+          ref={handleRef}
           variant="ghost"
           size="icon-sm"
-          className="ml-auto text-muted-foreground"
-          aria-label={`Edit ${verse.reference}`}
-          onClick={onEdit}
+          className="-mr-3 ml-2 cursor-grab touch-none text-muted-foreground active:cursor-grabbing"
+          aria-label={`Reorder ${verse.reference}`}
         >
-          <PencilIcon />
+          <GripVerticalIcon />
         </Button>
-        <Button
-          variant="ghost"
-          size="icon-sm"
-          className="text-muted-foreground"
-          aria-label={`Delete ${verse.reference}`}
-          onClick={() => removeMemoryVerse(verse.id)}
-        >
-          <Trash2Icon />
-        </Button>
-      </figcaption>
-      <blockquote className="font-serif text-[1.0625rem] leading-relaxed whitespace-pre-line">
-        {verse.text}
-      </blockquote>
-    </figure>
+      )}
+      <button
+        type="button"
+        onClick={onOpen}
+        className="flex min-w-0 flex-1 items-center gap-3 p-5 text-left transition-transform active:scale-[0.98]"
+      >
+        <span className="flex min-w-0 flex-1 flex-col gap-1">
+          <span className="flex items-center gap-2">
+            <span className="truncate font-semibold">{verse.reference}</span>
+            <StatusBadge status={getStatus(verse)} />
+          </span>
+          {verse.version && (
+            <span className="text-xs text-muted-foreground">
+              {verse.version}
+            </span>
+          )}
+        </span>
+        <ChevronRightIcon className="size-5 shrink-0 text-muted-foreground" />
+      </button>
+    </div>
   )
 }
 
-/** Verses grouped by Bible book in canonical order, sorted by chapter:verse. */
-function groupByBook(verses: MemoryVerse[]) {
-  const groups = new Map<
-    string,
-    { name: string; order: number; verses: MemoryVerse[] }
-  >()
-  for (const verse of verses) {
-    const book = getBook(verse.reference)
-    const group = groups.get(book.name) ?? { ...book, verses: [] }
-    group.verses.push(verse)
-    groups.set(book.name, group)
-  }
-  const position = (verse: MemoryVerse) => {
-    const { chapter, verse: number } = getChapterVerse(verse.reference)
-    return chapter * 1000 + number
-  }
-  return [...groups.values()]
-    .sort((a, b) => a.order - b.order || a.name.localeCompare(b.name))
-    .map((group) => ({
-      ...group,
-      verses: group.verses.sort((a, b) => position(a) - position(b)),
-    }))
+function StatusBadge({ status }: { status: MemoryStatus }) {
+  if (status === "new") return null
+  return (
+    <Badge
+      variant={status === "memorized" ? "default" : "secondary"}
+      className={cn(status === "learning" && "bg-gold text-gold-foreground")}
+    >
+      {MEMORY_STATUSES.find((option) => option.value === status)?.label}
+    </Badge>
+  )
 }
+
+function StatusChips({
+  value,
+  onChange,
+}: {
+  value: MemoryStatus
+  onChange: (value: MemoryStatus) => void
+}) {
+  return (
+    <FilterChips
+      label="Status"
+      options={[...MEMORY_STATUSES]}
+      value={value}
+      onChange={onChange}
+      className="mx-0 px-0"
+    />
+  )
+}
+
+function VerseViewer({
+  verse,
+  open,
+  onOpenChange,
+  onEdit,
+}: {
+  verse?: MemoryVerse
+  open: boolean
+  onOpenChange: (open: boolean) => void
+  onEdit: () => void
+}) {
+  // Keep showing the last verse while the drawer animates closed.
+  const [shown, setShown] = React.useState(verse)
+  if (verse && verse !== shown) setShown(verse)
+  if (!shown) return null
+
+  return (
+    <Drawer open={open} onOpenChange={onOpenChange} showSwipeHandle>
+      <DrawerContent>
+        <DrawerHeader>
+          <DrawerTitle>{shown.reference}</DrawerTitle>
+          {shown.version && (
+            <DrawerDescription>{shown.version}</DrawerDescription>
+          )}
+        </DrawerHeader>
+        <div className="flex flex-col gap-4 overflow-y-auto px-4 py-2">
+          <blockquote className="font-serif text-xl leading-relaxed whitespace-pre-line">
+            {shown.text}
+          </blockquote>
+          <StatusChips
+            value={getStatus(shown)}
+            onChange={(status) => updateMemoryVerse(shown.id, { status })}
+          />
+        </div>
+        <DrawerFooter className="grid grid-cols-2 gap-3 pb-[calc(1rem+env(safe-area-inset-bottom))]">
+          <Button
+            variant="secondary"
+            size="lg"
+            className="text-destructive"
+            onClick={() => {
+              removeMemoryVerse(shown.id)
+              onOpenChange(false)
+            }}
+          >
+            <Trash2Icon />
+            Delete
+          </Button>
+          <Button size="lg" onClick={onEdit}>
+            <PencilIcon />
+            Edit
+          </Button>
+        </DrawerFooter>
+      </DrawerContent>
+    </Drawer>
+  )
+}
+
+const bookItems = BIBLE_BOOKS.map((value) => ({ value }))
 
 function VerseDrawer({
   verse,
@@ -242,15 +380,22 @@ function VerseDrawer({
   onOpenChange: (open: boolean) => void
   onSaved: () => void
 }) {
+  const { book, passage } = splitReference(verse?.reference ?? "")
+  const [status, setStatus] = React.useState<MemoryStatus>(
+    verse ? getStatus(verse) : "new"
+  )
+
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
     const form = new FormData(event.currentTarget)
-    const reference = String(form.get("reference")).trim()
+    const book = String(form.get("book")).trim()
+    const passage = String(form.get("passage")).trim()
+    const reference = [book, passage].filter(Boolean).join(" ")
     const text = String(form.get("text")).trim()
     const version = String(form.get("version")).trim().toUpperCase()
     if (!reference || !text) return
 
-    const fields = { reference, text, version: version || undefined }
+    const fields = { reference, text, version: version || undefined, status }
     if (verse) updateMemoryVerse(verse.id, fields)
     else addMemoryVerse(fields)
     onOpenChange(false)
@@ -268,27 +413,39 @@ function VerseDrawer({
             <DrawerDescription>Saved on this device only.</DrawerDescription>
           </DrawerHeader>
           <FieldGroup className="overflow-y-auto p-4">
-            <div className="grid grid-cols-[1fr_6rem] gap-3">
+            <div className="grid grid-cols-[1fr_7rem] gap-3">
               <Field>
-                <FieldLabel htmlFor="reference">Reference</FieldLabel>
-                <Input
-                  id="reference"
-                  name="reference"
-                  defaultValue={verse?.reference}
-                  placeholder="Psalms 119:11"
+                <FieldLabel htmlFor="book">Book</FieldLabel>
+                <SuggestInput
+                  id="book"
+                  name="book"
+                  items={bookItems}
+                  defaultValue={book}
+                  placeholder="Psalms"
                   required
                 />
               </Field>
               <Field>
-                <FieldLabel htmlFor="version">Version</FieldLabel>
+                <FieldLabel htmlFor="passage">Chapter:verse</FieldLabel>
                 <Input
-                  id="version"
-                  name="version"
-                  defaultValue={verse?.version}
-                  placeholder="NLT"
+                  id="passage"
+                  name="passage"
+                  defaultValue={passage}
+                  placeholder="119:11"
+                  inputMode="decimal"
                 />
               </Field>
             </div>
+            <Field>
+              <FieldLabel htmlFor="version">Version</FieldLabel>
+              <SuggestInput
+                id="version"
+                name="version"
+                items={BIBLE_VERSIONS}
+                defaultValue={verse?.version}
+                placeholder="NIV"
+              />
+            </Field>
             <Field>
               <FieldLabel htmlFor="text">Verse</FieldLabel>
               <Textarea
@@ -300,10 +457,14 @@ function VerseDrawer({
                 required
               />
             </Field>
+            <Field>
+              <FieldLabel>Status</FieldLabel>
+              <StatusChips value={status} onChange={setStatus} />
+            </Field>
           </FieldGroup>
           <DrawerFooter className="pb-[calc(1rem+env(safe-area-inset-bottom))]">
             <Button type="submit" size="lg">
-              Save verse
+              Save
             </Button>
           </DrawerFooter>
         </form>

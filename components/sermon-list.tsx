@@ -18,6 +18,7 @@ import {
 export type SermonListItem = {
   slug: string
   title: string
+  subtitle?: string
   date: string
   series?: { slug: string; title: string; part: number }
   searchText: string
@@ -92,7 +93,7 @@ function SermonList({
                       {date.toLocaleDateString("en-US", { month: "short" })}
                     </span>
                     <span className="text-xl leading-none font-bold">
-                      {date.getDate()}
+                      {String(date.getDate()).padStart(2, "0")}
                     </span>
                   </span>
                   <span className="flex min-w-0 flex-1 flex-col gap-0.5">
@@ -108,6 +109,11 @@ function SermonList({
                     <span className="leading-snug font-semibold">
                       {sermon.title}
                     </span>
+                    {sermon.subtitle && (
+                      <span className="truncate text-sm text-muted-foreground">
+                        {sermon.subtitle}
+                      </span>
+                    )}
                   </span>
                   <ChevronRightIcon className="size-5 shrink-0 text-muted-foreground" />
                 </Link>

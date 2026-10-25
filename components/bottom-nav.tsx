@@ -1,5 +1,6 @@
 "use client"
 
+import * as React from "react"
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import {
@@ -11,6 +12,8 @@ import {
 } from "lucide-react"
 import { cn } from "cn"
 
+import { useHeartCheckDue } from "@/lib/heart-check-due"
+
 const tabs = [
   { href: "/", label: "Home", icon: HouseIcon },
   { href: "/sermons", label: "Sermons", icon: BookOpenIcon },
@@ -21,6 +24,18 @@ const tabs = [
 
 function BottomNav() {
   const pathname = usePathname()
+  const heartCheckDue = useHeartCheckDue()
+
+  // Badge the installed app's icon too, where the platform supports it.
+  React.useEffect(() => {
+    if (!("setAppBadge" in navigator)) return
+    const update = heartCheckDue
+      ? navigator.setAppBadge()
+      : navigator.clearAppBadge()
+    update.catch(() => {
+      // Not allowed here (e.g. not installed): the dot in the tab bar is enough.
+    })
+  }, [heartCheckDue])
 
   return (
     <nav className="fixed inset-x-0 bottom-0 z-40 border-t bg-card/85 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl">
@@ -28,11 +43,13 @@ function BottomNav() {
         {tabs.map(({ href, label, icon: Icon }) => {
           const active =
             href === "/" ? pathname === "/" : pathname.startsWith(href)
+          const dot = href === "/heart-check" && heartCheckDue
           return (
             <li key={href}>
               <Link
                 href={href}
                 aria-current={active ? "page" : undefined}
+                aria-label={dot ? `${label}, due now` : undefined}
                 className={cn(
                   "group flex h-full flex-col items-center justify-center gap-1 text-[0.6875rem] font-medium text-muted-foreground transition-colors",
                   active && "text-foreground"
@@ -40,7 +57,7 @@ function BottomNav() {
               >
                 <span
                   className={cn(
-                    "flex h-8 w-14 items-center justify-center rounded-full transition-colors group-active:bg-muted",
+                    "relative flex h-8 w-14 items-center justify-center rounded-full transition-colors group-active:bg-muted",
                     active &&
                       "bg-secondary text-primary group-active:bg-secondary"
                   )}
@@ -52,6 +69,12 @@ function BottomNav() {
                     fillOpacity={active ? 0.15 : 0}
                     aria-hidden
                   />
+                  {dot && (
+                    <span
+                      aria-hidden
+                      className="absolute top-1 right-3.5 size-2.5 rounded-full bg-brand-red ring-2 ring-card"
+                    />
+                  )}
                 </span>
                 {label}
               </Link>

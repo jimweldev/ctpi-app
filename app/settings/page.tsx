@@ -48,7 +48,7 @@ export default function SettingsPage() {
 
             <SettingsSection
               title="Clear"
-              description="Memory verses, heart checks and alarms are stored on this device only."
+              description="Memory verses, heart checks and schedules are stored on this device only."
             >
               <ClearDataButton />
             </SettingsSection>
@@ -83,6 +83,22 @@ export default function SettingsPage() {
                   Scripture quotations marked CEV are from the Contemporary
                   English Version, copyright © 1991, 1992, 1995 by American
                   Bible Society. Used by permission.
+                </p>
+                <p>
+                  Scripture taken from the New King James Version®. Copyright ©
+                  1982 by Thomas Nelson. Used by permission. All rights
+                  reserved.
+                </p>
+                <p>
+                  Scripture quotations marked ERV are taken from the Holy Bible:
+                  Easy-to-Read Version © 2014 by Bible League International.
+                  Used by permission.
+                </p>
+                <p>
+                  Scripture quotations marked ESV are from the ESV® Bible (The
+                  Holy Bible, English Standard Version®), © 2001 by Crossway, a
+                  publishing ministry of Good News Publishers. Used by
+                  permission. All rights reserved.
                 </p>
               </div>
             </SettingsSection>

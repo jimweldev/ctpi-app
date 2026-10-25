@@ -24,15 +24,40 @@ export type SermonListItem = {
   searchText: string
 }
 
+export type SermonListSeries = {
+  slug: string
+  title: string
+  subtitle?: string
+}
+
 const ALL = "all"
 const STANDALONE = "standalone"
+
+/** Consecutive sermons grouped by month, keeping the list's order. */
+function groupByMonth(sermons: SermonListItem[]) {
+  const groups: { month: string; sermons: SermonListItem[] }[] = []
+  for (const sermon of sermons) {
+    const month = sermon.date.slice(0, 7)
+    const last = groups.at(-1)
+    if (last?.month === month) last.sermons.push(sermon)
+    else groups.push({ month, sermons: [sermon] })
+  }
+  return groups
+}
+
+function formatMonth(month: string) {
+  return new Date(`${month}-01T00:00:00`).toLocaleDateString("en-US", {
+    month: "long",
+    year: "numeric",
+  })
+}
 
 function SermonList({
   sermons,
   series,
 }: {
   sermons: SermonListItem[]
-  series: { slug: string; title: string }[]
+  series: SermonListSeries[]
 }) {
   const [query, setQuery] = React.useState("")
   const [filter, setFilter] = React.useState(ALL)
@@ -43,6 +68,7 @@ function SermonList({
     ...series.map((s) => ({ value: s.slug, label: s.title })),
     ...(hasStandalone ? [{ value: STANDALONE, label: "Standalone" }] : []),
   ]
+  const selectedSeries = series.find((s) => s.slug === filter)
 
   const shown = sermons.filter(
     (sermon) =>
@@ -66,6 +92,22 @@ function SermonList({
         value={filter}
         onChange={setFilter}
       />
+      {selectedSeries && (
+        <div className="flex flex-col gap-1 rounded-3xl bg-hero p-5 text-hero-foreground">
+          <span className="text-[0.6875rem] font-bold tracking-wider text-gold uppercase">
+            Series · {sermons.filter((s) => s.series?.slug === filter).length}{" "}
+            parts
+          </span>
+          <p className="text-xl leading-tight font-bold">
+            {selectedSeries.title}
+          </p>
+          {selectedSeries.subtitle && (
+            <p className="font-serif text-sm italic opacity-85">
+              {selectedSeries.subtitle}
+            </p>
+          )}
+        </div>
+      )}
       {shown.length === 0 ? (
         <Empty>
           <EmptyHeader>
@@ -79,50 +121,61 @@ function SermonList({
           </EmptyHeader>
         </Empty>
       ) : (
-        <ul className="flex flex-col gap-3">
-          {shown.map((sermon) => {
-            const date = new Date(`${sermon.date}T00:00:00`)
-            return (
-              <li key={sermon.slug}>
-                <Link
-                  href={`/sermons/${sermon.slug}`}
-                  className="flex items-center gap-4 rounded-2xl bg-card p-4 shadow-xs ring-1 ring-foreground/8 transition-transform active:scale-[0.98]"
-                >
-                  <span className="flex size-14 shrink-0 flex-col items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
-                    <span className="text-[0.625rem] font-bold tracking-wider uppercase">
-                      {date.toLocaleDateString("en-US", { month: "short" })}
-                    </span>
-                    <span className="text-xl leading-none font-bold">
-                      {String(date.getDate()).padStart(2, "0")}
-                    </span>
-                  </span>
-                  <span className="flex min-w-0 flex-1 flex-col gap-0.5">
-                    {sermon.series && (
-                      <span className="truncate text-xs font-medium text-muted-foreground">
-                        {sermon.series.title}
-                        <span className="text-brand-red">
-                          {" "}
-                          · Part {sermon.series.part}
-                        </span>
-                      </span>
-                    )}
-                    <span className="leading-snug font-semibold">
-                      {sermon.title}
-                    </span>
-                    {sermon.subtitle && (
-                      <span className="truncate text-sm text-muted-foreground">
-                        {sermon.subtitle}
-                      </span>
-                    )}
-                  </span>
-                  <ChevronRightIcon className="size-5 shrink-0 text-muted-foreground" />
-                </Link>
-              </li>
-            )
-          })}
-        </ul>
+        groupByMonth(shown).map((group) => (
+          <section key={group.month} className="flex flex-col gap-3">
+            <h2 className="px-1 pt-1 text-xs font-medium tracking-widest text-muted-foreground uppercase">
+              {formatMonth(group.month)}
+            </h2>
+            <ul className="flex flex-col gap-3">
+              {group.sermons.map((sermon) => (
+                <li key={sermon.slug}>
+                  <SermonRow sermon={sermon} />
+                </li>
+              ))}
+            </ul>
+          </section>
+        ))
       )}
     </div>
+  )
+}
+
+function SermonRow({ sermon }: { sermon: SermonListItem }) {
+  const date = new Date(`${sermon.date}T00:00:00`)
+
+  return (
+    <Link
+      href={`/sermons/${sermon.slug}`}
+      className="flex items-center gap-4 rounded-2xl bg-card p-4 shadow-xs ring-1 ring-foreground/8 transition-transform active:scale-[0.98]"
+    >
+      <span className="flex size-14 shrink-0 flex-col items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
+        <span className="text-[0.625rem] font-bold tracking-wider uppercase">
+          {date.toLocaleDateString("en-US", { weekday: "short" })}
+        </span>
+        <span className="text-xl leading-none font-bold">
+          {String(date.getDate()).padStart(2, "0")}
+        </span>
+      </span>
+      <span className="flex min-w-0 flex-1 flex-col gap-1">
+        {sermon.series && (
+          <span className="flex items-center gap-1.5">
+            <span className="shrink-0 rounded-full bg-brand-red/10 px-2 py-0.5 text-[0.625rem] font-bold tracking-wider text-brand-red uppercase">
+              Part {sermon.series.part}
+            </span>
+            <span className="truncate text-xs text-muted-foreground">
+              {sermon.series.title}
+            </span>
+          </span>
+        )}
+        <span className="leading-snug font-semibold">{sermon.title}</span>
+        {sermon.subtitle && (
+          <span className="truncate text-sm text-muted-foreground">
+            {sermon.subtitle}
+          </span>
+        )}
+      </span>
+      <ChevronRightIcon className="size-5 shrink-0 text-muted-foreground" />
+    </Link>
   )
 }
 

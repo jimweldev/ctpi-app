@@ -6,7 +6,6 @@ import { DragDropProvider } from "@dnd-kit/react"
 import { useSortable } from "@dnd-kit/react/sortable"
 import {
   BrainIcon,
-  ChevronRightIcon,
   GripVerticalIcon,
   LibraryIcon,
   PencilIcon,
@@ -19,7 +18,6 @@ import { FilterChips } from "@/components/filter-chips"
 import { PageHeader } from "@/components/page-header"
 import { matchesSearch, SearchField } from "@/components/search-field"
 import { SuggestInput } from "@/components/suggest-input"
-import { Badge } from "@/components/ui/badge"
 import { Button } from "@/components/ui/button"
 import {
   Drawer,
@@ -148,6 +146,7 @@ function MemoryVerseList({
               </Empty>
             ) : (
               <>
+                <MemoryProgress verses={verses} />
                 <SearchField
                   value={query}
                   onChange={setQuery}
@@ -157,13 +156,9 @@ function MemoryVerseList({
                   label="Filter by status"
                   options={[
                     { value: "all", label: "All" },
-                    ...MEMORY_STATUSES.map((option) => ({
-                      value: option.value,
-                      label: `${option.label} ${
-                        verses.filter(
-                          (verse) => getStatus(verse) === option.value
-                        ).length
-                      }`,
+                    ...MEMORY_STATUSES.map(({ value, label }) => ({
+                      value,
+                      label,
                     })),
                   ]}
                   value={status}
@@ -257,7 +252,7 @@ function MemoryVerseCard({
           ref={handleRef}
           variant="ghost"
           size="icon-sm"
-          className="-mr-4 ml-1 size-11 cursor-grab touch-none text-muted-foreground active:cursor-grabbing"
+          className="ml-1 size-11 cursor-grab touch-none text-muted-foreground active:cursor-grabbing"
           aria-label={`Reorder ${verse.reference}`}
         >
           <GripVerticalIcon />
@@ -266,34 +261,98 @@ function MemoryVerseCard({
       <button
         type="button"
         onClick={onOpen}
-        className="flex min-w-0 flex-1 items-center gap-3 p-5 text-left transition-transform active:scale-[0.98]"
+        className={cn(
+          "flex min-w-0 flex-1 flex-col gap-2 p-4 text-left transition-transform active:scale-[0.98]",
+          sortable && "pl-0"
+        )}
       >
-        <span className="flex min-w-0 flex-1 flex-col gap-1">
-          <span className="flex items-center gap-2">
-            <span className="truncate font-semibold">{verse.reference}</span>
-            <StatusBadge status={getStatus(verse)} />
-          </span>
+        <span className="flex items-center gap-2">
+          <span className="truncate font-semibold">{verse.reference}</span>
           {verse.version && (
-            <span className="text-xs text-muted-foreground">
+            <span className="shrink-0 text-xs font-medium text-muted-foreground">
               {verse.version}
             </span>
           )}
+          <StatusPill status={getStatus(verse)} className="ml-auto" />
         </span>
-        <ChevronRightIcon className="size-5 shrink-0 text-muted-foreground" />
+        <span className="truncate font-serif text-[0.9375rem] text-muted-foreground">
+          {verse.text}
+        </span>
       </button>
     </div>
   )
 }
 
-function StatusBadge({ status }: { status: MemoryStatus }) {
-  if (status === "new") return null
+const STATUS_STYLES: Record<MemoryStatus, string> = {
+  new: "bg-secondary text-secondary-foreground",
+  learning: "bg-gold text-gold-foreground",
+  memorized: "bg-primary text-primary-foreground",
+}
+
+function StatusPill({
+  status,
+  className,
+}: {
+  status: MemoryStatus
+  className?: string
+}) {
   return (
-    <Badge
-      variant={status === "memorized" ? "default" : "secondary"}
-      className={cn(status === "learning" && "bg-gold text-gold-foreground")}
+    <span
+      className={cn(
+        "shrink-0 rounded-full px-2 py-0.5 text-[0.625rem] font-bold tracking-wider uppercase",
+        STATUS_STYLES[status],
+        className
+      )}
     >
       {MEMORY_STATUSES.find((option) => option.value === status)?.label}
-    </Badge>
+    </span>
+  )
+}
+
+/** How many verses are memorized, with a bar split by status. */
+function MemoryProgress({ verses }: { verses: MemoryVerse[] }) {
+  const counts = MEMORY_STATUSES.map((option) => ({
+    ...option,
+    count: verses.filter((verse) => getStatus(verse) === option.value).length,
+  }))
+  const memorized = counts.find((c) => c.value === "memorized")?.count ?? 0
+  // Memorized first, so the bar fills from the left as verses are learned.
+  const segments = [...counts].reverse()
+
+  return (
+    <div className="flex flex-col gap-3 rounded-3xl bg-card p-5 shadow-xs ring-1 ring-foreground/8">
+      <p className="flex items-baseline gap-1.5">
+        <span className="text-2xl leading-none font-bold">{memorized}</span>
+        <span className="text-sm text-muted-foreground">
+          of {verses.length} memorized
+        </span>
+      </p>
+      <div className="flex h-2 gap-0.5 overflow-hidden rounded-full bg-muted">
+        {segments.map(
+          (segment) =>
+            segment.count > 0 && (
+              <span
+                key={segment.value}
+                className={STATUS_STYLES[segment.value]}
+                style={{ flexGrow: segment.count }}
+              />
+            )
+        )}
+      </div>
+      <ul className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-muted-foreground">
+        {segments.map((segment) => (
+          <li key={segment.value} className="flex items-center gap-1.5">
+            <span
+              className={cn(
+                "size-2 rounded-full",
+                STATUS_STYLES[segment.value]
+              )}
+            />
+            {segment.label} {segment.count}
+          </li>
+        ))}
+      </ul>
+    </div>
   )
 }
 

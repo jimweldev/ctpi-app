@@ -47,10 +47,9 @@ import {
   useHeartChecks,
 } from "@/lib/heart-checks"
 
-type DateRange = "7d" | "1m" | "3m" | "all" | "custom"
+type DateRange = "1m" | "3m" | "all" | "custom"
 
 const DATE_RANGES: { value: DateRange; label: string }[] = [
-  { value: "7d", label: "7 days" },
   { value: "1m", label: "1 month" },
   { value: "3m", label: "3 months" },
   { value: "all", label: "All" },
@@ -64,10 +63,6 @@ function monthsBefore(date: Date, months: number) {
 /** First "YYYY-MM-DD" included in a preset range, or "" for all time. */
 function rangeStart(range: Exclude<DateRange, "custom">, today: Date) {
   switch (range) {
-    case "7d":
-      return toDateKey(
-        new Date(today.getFullYear(), today.getMonth(), today.getDate() - 6)
-      )
     case "1m":
       return toDateKey(monthsBefore(today, 1))
     case "3m":

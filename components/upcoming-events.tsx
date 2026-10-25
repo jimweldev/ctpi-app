@@ -3,6 +3,13 @@
 import Image from "next/image"
 import { CalendarIcon } from "lucide-react"
 
+import {
+  Empty,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyMedia,
+  EmptyTitle,
+} from "@/components/ui/empty"
 import { toDateKey, useNow } from "@/lib/heart-check-schedules"
 import { type ChurchEvent, formatEventDate } from "@/lib/events"
 
@@ -16,16 +23,28 @@ function useUpcoming(events: ChurchEvent[]) {
   return today ? events.filter((event) => event.date >= today) : events
 }
 
-/** Upcoming events with a heading; renders nothing when there are none. */
+/** Upcoming events, or an empty state when there are none. */
 function UpcomingEvents({ events }: { events: ChurchEvent[] }) {
   const upcoming = useUpcoming(events)
-  if (upcoming.length === 0) return null
+
+  if (upcoming.length === 0) {
+    return (
+      <Empty>
+        <EmptyHeader>
+          <EmptyMedia variant="icon">
+            <CalendarIcon />
+          </EmptyMedia>
+          <EmptyTitle>No upcoming events</EmptyTitle>
+          <EmptyDescription>
+            New events and announcements will show up here.
+          </EmptyDescription>
+        </EmptyHeader>
+      </Empty>
+    )
+  }
 
   return (
-    <section className="flex flex-col gap-3">
-      <h2 className="px-1 text-xs font-medium tracking-widest text-muted-foreground uppercase">
-        Upcoming
-      </h2>
+    <div className="flex flex-col gap-3">
       {upcoming.map((event) => (
         <article
           key={event.id}
@@ -53,7 +72,7 @@ function UpcomingEvents({ events }: { events: ChurchEvent[] }) {
           </div>
         </article>
       ))}
-    </section>
+    </div>
   )
 }
 

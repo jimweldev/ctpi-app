@@ -11,9 +11,11 @@ import { cn } from "cn"
 import { HeartCheckCount } from "@/components/heart-check-count"
 import { HeartCheckDueCard } from "@/components/heart-check-due-card"
 import { MemoryVerseCount } from "@/components/memory-verse-count"
+import { SermonNoteQuote } from "@/components/sermon-note-quote"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { UpcomingEvents } from "@/components/upcoming-events"
 import { getAllEvents } from "@/lib/events"
-import { formatSermonDate, getAllSermons } from "@/lib/sermons"
+import { formatSermonDate, getAllSermons, getSermonNotes } from "@/lib/sermons"
 
 export default function HomePage() {
   const sermons = getAllSermons()
@@ -75,51 +77,55 @@ export default function HomePage() {
           </Link>
         )}
 
-        <UpcomingEvents events={events} />
+        <Tabs defaultValue="dashboard" className="gap-6">
+          <TabsList className="h-10! w-full">
+            <TabsTrigger value="dashboard">Dashboard</TabsTrigger>
+            <TabsTrigger value="events">Events</TabsTrigger>
+          </TabsList>
 
-        <section className="flex flex-col gap-3">
-          <h2 className="px-1 text-xs font-medium tracking-widest text-muted-foreground uppercase">
-            Grow
-          </h2>
-          <div className="grid grid-cols-3 gap-3">
-            <QuickLink
-              href="/sermons"
-              icon={<BookOpenIcon className="size-5" />}
-              iconClassName="bg-secondary text-primary"
-              title="Sermons"
-              detail={`${sermons.length} messages`}
-            />
-            <QuickLink
-              href="/memory-verses"
-              icon={<BrainIcon className="size-5" />}
-              iconClassName="bg-accent text-accent-foreground"
-              title="Memory Verses"
-              detail={<MemoryVerseCount />}
-            />
-            <QuickLink
-              href="/heart-check"
-              icon={<HeartIcon className="size-5" />}
-              iconClassName="bg-brand-red/12 text-brand-red"
-              title="Heart Check"
-              detail={<HeartCheckCount />}
-            />
-          </div>
-        </section>
+          <TabsContent value="dashboard" className="flex flex-col gap-6">
+            <section className="flex flex-col gap-3">
+              <h2 className="px-1 text-xs font-medium tracking-widest text-muted-foreground uppercase">
+                Grow
+              </h2>
+              <div className="flex flex-col divide-y divide-foreground/8 overflow-hidden rounded-3xl bg-card shadow-xs ring-1 ring-foreground/8">
+                <QuickLink
+                  href="/sermons"
+                  icon={<BookOpenIcon className="size-5" />}
+                  iconClassName="bg-secondary text-primary"
+                  title="Sermons"
+                  detail={`${sermons.length} messages`}
+                />
+                <QuickLink
+                  href="/memory-verses"
+                  icon={<BrainIcon className="size-5" />}
+                  iconClassName="bg-accent text-accent-foreground"
+                  title="Memory Verses"
+                  detail={<MemoryVerseCount />}
+                />
+                <QuickLink
+                  href="/heart-check"
+                  icon={<HeartIcon className="size-5" />}
+                  iconClassName="bg-brand-red/12 text-brand-red"
+                  title="Heart Check"
+                  detail={<HeartCheckCount />}
+                />
+              </div>
+            </section>
 
-        <figure className="relative flex flex-col gap-3 overflow-hidden rounded-3xl bg-hero p-6 pt-10 text-hero-foreground">
-          <span
-            aria-hidden
-            className="absolute top-0 left-4 font-serif text-8xl leading-none text-gold/70"
-          >
-            &ldquo;
-          </span>
-          <blockquote className="relative font-serif text-xl leading-snug italic">
-            A memorized verse today is a victory tomorrow.
-          </blockquote>
-          <figcaption className="text-xs font-medium text-gold">
-            From &ldquo;Prepare your weapon&rdquo;
-          </figcaption>
-        </figure>
+            {latest && (
+              <SermonNoteQuote
+                notes={getSermonNotes(latest)}
+                slug={latest.slug}
+                title={latest.title}
+              />
+            )}
+          </TabsContent>
+
+          <TabsContent value="events">
+            <UpcomingEvents events={events} />
+          </TabsContent>
+        </Tabs>
       </main>
     </>
   )
@@ -141,20 +147,21 @@ function QuickLink({
   return (
     <Link
       href={href}
-      className="flex flex-col gap-3 rounded-3xl bg-card p-3.5 ring-1 ring-foreground/8 transition-transform active:scale-[0.97]"
+      className="flex items-center gap-3 p-4 transition-colors active:bg-muted"
     >
       <span
         className={cn(
-          "flex size-10 items-center justify-center rounded-2xl",
+          "flex size-10 shrink-0 items-center justify-center rounded-2xl",
           iconClassName
         )}
       >
         {icon}
       </span>
-      <span className="flex flex-col gap-0.5">
+      <span className="flex min-w-0 flex-1 flex-col gap-0.5">
         <span className="text-sm leading-tight font-semibold">{title}</span>
-        <span className="text-xs text-muted-foreground">{detail}</span>
+        <span className="truncate text-xs text-muted-foreground">{detail}</span>
       </span>
+      <ChevronRightIcon className="size-4 shrink-0 text-muted-foreground" />
     </Link>
   )
 }

@@ -132,6 +132,22 @@ export function getSermonSearchText(sermon: SermonEntry) {
   return parts.filter(Boolean).join(" ")
 }
 
+/**
+ * A sermon's notes as plain text, in order, for quoting on their own. Long
+ * notes are left out, since they don't read well out of context.
+ */
+export function getSermonNotes(sermon: Sermon, maxLength = 240) {
+  const notes: string[] = []
+  const walk = (blocks: Block[]) => {
+    for (const block of blocks) {
+      if (block.type === "note") notes.push(stripFormatting(block.text).trim())
+      else if (block.type !== "verse") walk(block.content)
+    }
+  }
+  walk([...sermon.content, ...(sermon.outro ?? [])])
+  return notes.filter((note) => note && note.length <= maxLength)
+}
+
 /** Remove the note/verse formatting markers, keeping the words. */
 function stripFormatting(text: string) {
   return text

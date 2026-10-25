@@ -1,7 +1,11 @@
 import type { Metadata } from "next"
 
 import { PageHeader } from "@/components/page-header"
-import { SermonList, type SermonListItem } from "@/components/sermon-list"
+import {
+  SermonList,
+  type SermonListItem,
+  type SermonListSeries,
+} from "@/components/sermon-list"
 import { getAllSeries, getAllSermons, getSermonSearchText } from "@/lib/sermons"
 
 export const metadata: Metadata = {
@@ -21,7 +25,9 @@ export default function SermonsPage() {
     },
     searchText: getSermonSearchText(sermon),
   }))
-  const series = getAllSeries().map(({ slug, title }) => ({ slug, title }))
+  const series: SermonListSeries[] = getAllSeries().map(
+    ({ slug, title, subtitle }) => ({ slug, title, subtitle })
+  )
 
   return (
     <>

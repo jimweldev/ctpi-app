@@ -104,9 +104,6 @@ self.addEventListener("fetch", (event) => {
   const url = new URL(request.url)
   if (url.origin !== self.location.origin) return
 
-  // Calendar files are built per request; never serve a stale one.
-  if (url.pathname.endsWith(".ics")) return
-
   // Pages: network first so content stays fresh, cached copy when offline.
   if (request.mode === "navigate") {
     event.respondWith(

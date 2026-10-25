@@ -34,7 +34,11 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#2a0e72",
+  // Matches --background in globals.css for each color scheme.
+  themeColor: [
+    { media: "(prefers-color-scheme: light)", color: "#fcfaf3" },
+    { media: "(prefers-color-scheme: dark)", color: "#0c091f" },
+  ],
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",

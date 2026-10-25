@@ -76,7 +76,7 @@ export default async function SermonPage(props: PageProps<"/sermons/[slug]">) {
         title={sermon.title}
         back={{ href: "/sermons", label: "Sermons" }}
       />
-      <main className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-5">
+      <main className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-4">
         <header className="flex flex-col gap-3 rounded-3xl bg-hero p-6 text-hero-foreground shadow-lg">
           {seriesInfo && (
             <p className="text-xs font-bold tracking-widest text-gold uppercase">
@@ -129,7 +129,7 @@ function SeriesLink({
     <Link
       href={`/sermons/${sermon.slug}`}
       className={cn(
-        "flex items-center gap-2 rounded-2xl bg-card p-4 ring-1 ring-foreground/8 transition-transform active:scale-[0.97]",
+        "flex items-center gap-2 rounded-2xl bg-card p-4 shadow-xs ring-1 ring-foreground/8 transition-transform active:scale-[0.98]",
         isNext && "col-start-2 flex-row-reverse text-right"
       )}
     >

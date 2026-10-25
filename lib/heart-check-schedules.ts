@@ -87,25 +87,6 @@ export function nextOccurrence(schedule: HeartCheckSchedule, now: number) {
   return null
 }
 
-/**
- * Link to a calendar file with a reminder event for each schedule that is
- * still ahead, or null if none are. Each schedule is sent as
- * `id.YYYYMMDDTHHmm.days`: its first local due time and repeat weekdays
- * (empty for one-time), so the server needs no time zone. Parsed by
- * `app/heart-check/schedule/calendar.ics/route.ts`.
- */
-export function calendarHref(schedules: HeartCheckSchedule[], now: number) {
-  const params = new URLSearchParams()
-  for (const schedule of schedules) {
-    const first = nextOccurrence(schedule, now)
-    if (!first) continue
-    const start = `${toDateKey(first).replaceAll("-", "")}T${schedule.time.replace(":", "")}`
-    params.append("s", `${schedule.id}.${start}.${schedule.days.join("")}`)
-  }
-  if (params.size === 0) return null
-  return `/heart-check/schedule/calendar.ics?${params}`
-}
-
 /** When the schedule was due earlier today, or null if it wasn't. */
 export function dueEarlierToday(schedule: HeartCheckSchedule, now: number) {
   if (!schedule.enabled) return null

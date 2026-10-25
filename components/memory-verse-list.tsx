@@ -14,6 +14,7 @@ import {
   Trash2Icon,
 } from "lucide-react"
 
+import { ConfirmDelete } from "@/components/confirm-delete"
 import { FilterChips } from "@/components/filter-chips"
 import { PageHeader } from "@/components/page-header"
 import { matchesSearch, SearchField } from "@/components/search-field"
@@ -210,13 +211,18 @@ function MemoryVerseList({
           if (viewing) openEditor(viewing)
         }}
       />
-      <VerseDrawer
-        key={editor.key}
-        verse={editor.verse}
-        open={editorOpen}
-        onOpenChange={setEditorOpen}
-        onSaved={() => setTab("mine")}
-      />
+      <Drawer open={editorOpen} onOpenChange={setEditorOpen} showSwipeHandle>
+        <DrawerContent>
+          <VerseForm
+            key={editor.key}
+            verse={editor.verse}
+            onDone={() => {
+              setEditorOpen(false)
+              setTab("mine")
+            }}
+          />
+        </DrawerContent>
+      </Drawer>
     </>
   )
 }
@@ -251,7 +257,7 @@ function MemoryVerseCard({
           ref={handleRef}
           variant="ghost"
           size="icon-sm"
-          className="-mr-3 ml-2 cursor-grab touch-none text-muted-foreground active:cursor-grabbing"
+          className="-mr-4 ml-1 size-11 cursor-grab touch-none text-muted-foreground active:cursor-grabbing"
           aria-label={`Reorder ${verse.reference}`}
         >
           <GripVerticalIcon />
@@ -323,44 +329,54 @@ function VerseViewer({
   // Keep showing the last verse while the drawer animates closed.
   const [shown, setShown] = React.useState(verse)
   if (verse && verse !== shown) setShown(verse)
-  if (!shown) return null
 
+  // The drawer stays mounted (only its content waits for a verse), so even
+  // the first open animates in.
   return (
     <Drawer open={open} onOpenChange={onOpenChange} showSwipeHandle>
       <DrawerContent>
-        <DrawerHeader>
-          <DrawerTitle>{shown.reference}</DrawerTitle>
-          {shown.version && (
-            <DrawerDescription>{shown.version}</DrawerDescription>
-          )}
-        </DrawerHeader>
-        <div className="flex flex-col gap-4 overflow-y-auto px-4 py-2">
-          <blockquote className="font-serif text-xl leading-relaxed whitespace-pre-line">
-            {shown.text}
-          </blockquote>
-          <StatusChips
-            value={getStatus(shown)}
-            onChange={(status) => updateMemoryVerse(shown.id, { status })}
-          />
-        </div>
-        <DrawerFooter className="grid grid-cols-2 gap-3 pb-[calc(1rem+env(safe-area-inset-bottom))]">
-          <Button
-            variant="secondary"
-            size="lg"
-            className="text-destructive"
-            onClick={() => {
-              removeMemoryVerse(shown.id)
-              onOpenChange(false)
-            }}
-          >
-            <Trash2Icon />
-            Delete
-          </Button>
-          <Button size="lg" onClick={onEdit}>
-            <PencilIcon />
-            Edit
-          </Button>
-        </DrawerFooter>
+        {shown && (
+          <>
+            <DrawerHeader>
+              <DrawerTitle>{shown.reference}</DrawerTitle>
+              {shown.version && (
+                <DrawerDescription>{shown.version}</DrawerDescription>
+              )}
+            </DrawerHeader>
+            <div className="flex flex-col gap-4 overflow-y-auto px-4 py-2">
+              <blockquote className="font-serif text-xl leading-relaxed whitespace-pre-line">
+                {shown.text}
+              </blockquote>
+              <StatusChips
+                value={getStatus(shown)}
+                onChange={(status) => updateMemoryVerse(shown.id, { status })}
+              />
+            </div>
+            <DrawerFooter className="grid grid-cols-2">
+              <ConfirmDelete
+                title={`Delete ${shown.reference}?`}
+                description="This removes the verse from your memory verses. This can't be undone."
+                onConfirm={() => {
+                  removeMemoryVerse(shown.id)
+                  onOpenChange(false)
+                }}
+              >
+                <Button
+                  variant="secondary"
+                  size="lg"
+                  className="text-destructive"
+                >
+                  <Trash2Icon />
+                  Delete
+                </Button>
+              </ConfirmDelete>
+              <Button size="lg" onClick={onEdit}>
+                <PencilIcon />
+                Edit
+              </Button>
+            </DrawerFooter>
+          </>
+        )}
       </DrawerContent>
     </Drawer>
   )
@@ -368,17 +384,13 @@ function VerseViewer({
 
 const bookItems = BIBLE_BOOKS.map((value) => ({ value }))
 
-function VerseDrawer({
+function VerseForm({
   verse,
-  open,
-  onOpenChange,
-  onSaved,
+  onDone,
 }: {
   /** The verse to edit; omit to add a new one. */
   verse?: MemoryVerse
-  open: boolean
-  onOpenChange: (open: boolean) => void
-  onSaved: () => void
+  onDone: () => void
 }) {
   const { book, passage } = splitReference(verse?.reference ?? "")
   const [status, setStatus] = React.useState<MemoryStatus>(
@@ -398,78 +410,72 @@ function VerseDrawer({
     const fields = { reference, text, version: version || undefined, status }
     if (verse) updateMemoryVerse(verse.id, fields)
     else addMemoryVerse(fields)
-    onOpenChange(false)
-    onSaved()
+    onDone()
   }
 
   return (
-    <Drawer open={open} onOpenChange={onOpenChange} showSwipeHandle>
-      <DrawerContent>
-        <form onSubmit={onSubmit} className="flex min-h-0 flex-col">
-          <DrawerHeader>
-            <DrawerTitle>
-              {verse ? "Edit memory verse" : "Add memory verse"}
-            </DrawerTitle>
-            <DrawerDescription>Saved on this device only.</DrawerDescription>
-          </DrawerHeader>
-          <FieldGroup className="overflow-y-auto p-4">
-            <div className="grid grid-cols-[1fr_7rem] gap-3">
-              <Field>
-                <FieldLabel htmlFor="book">Book</FieldLabel>
-                <SuggestInput
-                  id="book"
-                  name="book"
-                  items={bookItems}
-                  defaultValue={book}
-                  placeholder="Psalms"
-                  required
-                />
-              </Field>
-              <Field>
-                <FieldLabel htmlFor="passage">Chapter:verse</FieldLabel>
-                <Input
-                  id="passage"
-                  name="passage"
-                  defaultValue={passage}
-                  placeholder="119:11"
-                  inputMode="decimal"
-                />
-              </Field>
-            </div>
-            <Field>
-              <FieldLabel htmlFor="version">Version</FieldLabel>
-              <SuggestInput
-                id="version"
-                name="version"
-                items={BIBLE_VERSIONS}
-                defaultValue={verse?.version}
-                placeholder="NIV"
-              />
-            </Field>
-            <Field>
-              <FieldLabel htmlFor="text">Verse</FieldLabel>
-              <Textarea
-                id="text"
-                name="text"
-                defaultValue={verse?.text}
-                rows={5}
-                placeholder="I have hidden your word in my heart…"
-                required
-              />
-            </Field>
-            <Field>
-              <FieldLabel>Status</FieldLabel>
-              <StatusChips value={status} onChange={setStatus} />
-            </Field>
-          </FieldGroup>
-          <DrawerFooter className="pb-[calc(1rem+env(safe-area-inset-bottom))]">
-            <Button type="submit" size="lg">
-              Save
-            </Button>
-          </DrawerFooter>
-        </form>
-      </DrawerContent>
-    </Drawer>
+    <form onSubmit={onSubmit} className="flex min-h-0 flex-col">
+      <DrawerHeader>
+        <DrawerTitle>
+          {verse ? "Edit memory verse" : "Add memory verse"}
+        </DrawerTitle>
+        <DrawerDescription>Saved on this device only.</DrawerDescription>
+      </DrawerHeader>
+      <FieldGroup className="overflow-y-auto p-4">
+        <div className="grid grid-cols-[1fr_7rem] gap-3">
+          <Field>
+            <FieldLabel htmlFor="book">Book</FieldLabel>
+            <SuggestInput
+              id="book"
+              name="book"
+              items={bookItems}
+              defaultValue={book}
+              placeholder="Psalms"
+              required
+            />
+          </Field>
+          <Field>
+            <FieldLabel htmlFor="passage">Chapter:verse</FieldLabel>
+            <Input
+              id="passage"
+              name="passage"
+              defaultValue={passage}
+              placeholder="119:11"
+            />
+          </Field>
+        </div>
+        <Field>
+          <FieldLabel htmlFor="version">Version</FieldLabel>
+          <SuggestInput
+            id="version"
+            name="version"
+            items={BIBLE_VERSIONS}
+            defaultValue={verse?.version}
+            placeholder="NIV"
+          />
+        </Field>
+        <Field>
+          <FieldLabel htmlFor="text">Verse</FieldLabel>
+          <Textarea
+            id="text"
+            name="text"
+            defaultValue={verse?.text}
+            rows={5}
+            placeholder="I have hidden your word in my heart…"
+            required
+          />
+        </Field>
+        <Field>
+          <FieldLabel>Status</FieldLabel>
+          <StatusChips value={status} onChange={setStatus} />
+        </Field>
+      </FieldGroup>
+      <DrawerFooter>
+        <Button type="submit" size="lg">
+          Save
+        </Button>
+      </DrawerFooter>
+    </form>
   )
 }
 

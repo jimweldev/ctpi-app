@@ -12,7 +12,9 @@ import {
 } from "lucide-react"
 import { cn } from "cn"
 
+import { ConfirmDelete } from "@/components/confirm-delete"
 import { FilterChips } from "@/components/filter-chips"
+import { HeartCheckDueCard } from "@/components/heart-check-due-card"
 import { PageHeader } from "@/components/page-header"
 import { Button } from "@/components/ui/button"
 import {
@@ -32,7 +34,6 @@ import {
 } from "@/components/ui/empty"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { useHeartCheckDue } from "@/lib/heart-check-due"
 import { formatDay, toDateKey, useNow } from "@/lib/heart-check-schedules"
 import {
   addHeartCheck,
@@ -100,8 +101,6 @@ function HeartCheckList() {
     setAdding(true)
   }
 
-  const due = useHeartCheckDue()
-
   const { from, to } =
     range === "custom"
       ? custom
@@ -136,24 +135,8 @@ function HeartCheckList() {
           </div>
         }
       />
-      <main className="mx-auto flex w-full max-w-2xl flex-col gap-3 px-4 py-6">
-        {due && (
-          <button
-            type="button"
-            onClick={() => openForm()}
-            className="flex items-center gap-4 rounded-3xl bg-hero p-5 text-left text-hero-foreground shadow-lg transition-transform active:scale-[0.98]"
-          >
-            <CalendarClockIcon className="size-8 shrink-0 text-gold" />
-            <span className="flex flex-col">
-              <span className="font-semibold">
-                It&apos;s time for your heart check
-              </span>
-              <span className="text-sm opacity-80">
-                Tap to check where your heart is today.
-              </span>
-            </span>
-          </button>
-        )}
+      <main className="mx-auto flex w-full max-w-2xl flex-col gap-3 px-4 py-4">
+        <HeartCheckDueCard onOpen={() => openForm()} />
 
         {checks.length === 0 ? (
           <Empty>
@@ -339,19 +322,20 @@ function HeartCheckDetails({
           {check.details ?? "No details"}
         </p>
       </div>
-      <DrawerFooter className="grid grid-cols-2 gap-3 pb-[calc(1rem+env(safe-area-inset-bottom))]">
-        <Button
-          variant="secondary"
-          size="lg"
-          className="text-destructive"
-          onClick={() => {
+      <DrawerFooter className="grid grid-cols-2">
+        <ConfirmDelete
+          title="Delete this heart check?"
+          description={`Your check from ${formatDay(check.date)} will be removed. This can't be undone.`}
+          onConfirm={() => {
             removeHeartCheck(check.id)
             onDone()
           }}
         >
-          <Trash2Icon />
-          Delete
-        </Button>
+          <Button variant="secondary" size="lg" className="text-destructive">
+            <Trash2Icon />
+            Delete
+          </Button>
+        </ConfirmDelete>
         <Button size="lg" onClick={onEdit}>
           <PencilIcon />
           Edit
@@ -465,7 +449,7 @@ function HeartCheckForm({
           />
         </label>
       </div>
-      <DrawerFooter className="pb-[calc(1rem+env(safe-area-inset-bottom))]">
+      <DrawerFooter>
         <Button type="submit" size="lg" disabled={level === null}>
           Save
         </Button>

@@ -160,6 +160,20 @@
     -webkit-tap-highlight-color: transparent;
     overscroll-behavior-y: none;
   }
+  /* Respect "reduce motion": no tap-shrink, no animated transitions. */
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    *::before,
+    *::after {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+    :active {
+      scale: none !important;
+    }
+  }
   /* Font size setting (lib/font-size.ts): scales every rem-based size. */
   html[data-font-size="small"] {
     font-size: 93.75%;

@@ -180,7 +180,11 @@ function DrawerFooter({ className, ...props }: React.ComponentProps<"div">) {
   return (
     <div
       data-slot="drawer-footer"
-      className={cn("mt-auto flex shrink-0 flex-col gap-2 p-4 pt-0", className)}
+      className={cn(
+        // Separated bar for the drawer's actions, clear of the home indicator.
+        "mt-4 flex shrink-0 flex-col gap-3 border-t p-4 pb-[calc(1rem+env(safe-area-inset-bottom))]",
+        className
+      )}
       {...props}
     />
   )

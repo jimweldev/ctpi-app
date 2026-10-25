@@ -4,12 +4,12 @@ import * as React from "react"
 import {
   CalendarClockIcon,
   CalendarIcon,
-  CalendarPlusIcon,
   PlusIcon,
   Trash2Icon,
 } from "lucide-react"
 import { cn } from "cn"
 
+import { ConfirmDelete } from "@/components/confirm-delete"
 import { PageHeader } from "@/components/page-header"
 import { Button } from "@/components/ui/button"
 import {
@@ -30,7 +30,6 @@ import { Switch } from "@/components/ui/switch"
 import { TimeWheelPicker } from "@/components/wheel-picker"
 import {
   addHeartCheckSchedule,
-  calendarHref,
   formatDay,
   formatTime,
   type HeartCheckSchedule,
@@ -76,7 +75,6 @@ function HeartCheckScheduleList() {
           .filter((date) => date !== null)
           .sort((a, b) => a.getTime() - b.getTime())
           .at(0)
-  const calendar = now === null ? null : calendarHref(schedules, now)
 
   return (
     <>
@@ -94,7 +92,7 @@ function HeartCheckScheduleList() {
           </Button>
         }
       />
-      <main className="mx-auto flex w-full max-w-2xl flex-col gap-3 px-4 py-6">
+      <main className="mx-auto flex w-full max-w-2xl flex-col gap-3 px-4 py-4">
         {schedules.length === 0 ? (
           <Empty>
             <EmptyHeader>
@@ -125,22 +123,6 @@ function HeartCheckScheduleList() {
                 onEdit={() => openEditor(schedule)}
               />
             ))}
-            {calendar && (
-              <div className="flex flex-col items-center gap-2 pt-4 text-center">
-                <Button
-                  variant="secondary"
-                  nativeButton={false}
-                  render={<a href={calendar} />}
-                >
-                  <CalendarPlusIcon />
-                  Add to my calendar
-                </Button>
-                <p className="max-w-xs text-xs text-muted-foreground">
-                  Your phone&apos;s calendar reminds you even when the app is
-                  closed. Add again after changing your schedules.
-                </p>
-              </div>
-            )}
           </>
         )}
       </main>
@@ -169,7 +151,7 @@ function ScheduleCard({
   const { clock, period } = formatTime(schedule.time)
 
   return (
-    <article className="flex items-center gap-3 rounded-3xl bg-card p-5 shadow-xs ring-1 ring-foreground/8">
+    <article className="flex items-center gap-3 rounded-2xl bg-card p-5 shadow-xs ring-1 ring-foreground/8">
       <button
         type="button"
         onClick={onEdit}
@@ -336,7 +318,7 @@ function ScheduleEditor({
                   aria-label={WEEKDAY_NAMES[day]}
                   onClick={() => toggleDay(day)}
                   className={cn(
-                    "flex size-9 items-center justify-center rounded-full text-sm font-medium transition-colors",
+                    "flex size-10 items-center justify-center rounded-full text-sm font-medium transition-colors",
                     day === 0 ? "text-brand-red" : "text-foreground",
                     selected &&
                       "bg-primary text-primary-foreground dark:bg-gold dark:text-gold-foreground"
@@ -348,25 +330,23 @@ function ScheduleEditor({
             })}
           </div>
         </div>
-
+      </div>
+      <DrawerFooter className={cn(schedule && "grid grid-cols-2")}>
         {schedule && (
-          <Button
-            variant="ghost"
-            className="self-center text-destructive"
-            onClick={() => {
+          <ConfirmDelete
+            title="Delete this schedule?"
+            description="You won't be reminded at this time anymore. This can't be undone."
+            onConfirm={() => {
               removeHeartCheckSchedule(schedule.id)
               onDone()
             }}
           >
-            <Trash2Icon />
-            Delete schedule
-          </Button>
+            <Button variant="secondary" size="lg" className="text-destructive">
+              <Trash2Icon />
+              Delete
+            </Button>
+          </ConfirmDelete>
         )}
-      </div>
-      <DrawerFooter className="grid grid-cols-2 gap-3 pb-[calc(1rem+env(safe-area-inset-bottom))]">
-        <Button variant="secondary" size="lg" onClick={onDone}>
-          Cancel
-        </Button>
         <Button size="lg" onClick={save}>
           Save
         </Button>

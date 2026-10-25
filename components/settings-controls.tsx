@@ -134,7 +134,7 @@ function FontSizeSelector() {
 }
 
 const rowClassName =
-  "flex items-center gap-3 rounded-2xl bg-card p-4 text-left ring-1 ring-foreground/8"
+  "flex items-center gap-3 rounded-2xl bg-card p-4 text-left shadow-xs ring-1 ring-foreground/8"
 
 function BackupControls() {
   const fileInput = React.useRef<HTMLInputElement>(null)

@@ -79,14 +79,14 @@ function SermonList({
           </EmptyHeader>
         </Empty>
       ) : (
-        <ul className="flex flex-col gap-2.5">
+        <ul className="flex flex-col gap-3">
           {shown.map((sermon) => {
             const date = new Date(`${sermon.date}T00:00:00`)
             return (
               <li key={sermon.slug}>
                 <Link
                   href={`/sermons/${sermon.slug}`}
-                  className="flex items-center gap-4 rounded-2xl bg-card p-3 pr-4 ring-1 ring-foreground/8 transition-transform active:scale-[0.98]"
+                  className="flex items-center gap-4 rounded-2xl bg-card p-4 shadow-xs ring-1 ring-foreground/8 transition-transform active:scale-[0.98]"
                 >
                   <span className="flex size-14 shrink-0 flex-col items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
                     <span className="text-[0.625rem] font-bold tracking-wider uppercase">

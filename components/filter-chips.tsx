@@ -35,7 +35,7 @@ function FilterChips<T extends string>({
             aria-checked={selected}
             onClick={() => onChange(option.value)}
             className={cn(
-              "shrink-0 rounded-full bg-muted px-3.5 py-1.5 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors",
+              "flex h-11 shrink-0 items-center rounded-full bg-muted px-4 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors",
               selected && "bg-primary text-primary-foreground"
             )}
           >

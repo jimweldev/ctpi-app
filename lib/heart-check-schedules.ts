@@ -87,18 +87,20 @@ export function nextOccurrence(schedule: HeartCheckSchedule, now: number) {
   return null
 }
 
-/** When the schedule was due earlier today, or null if it wasn't. */
-export function dueEarlierToday(schedule: HeartCheckSchedule, now: number) {
+/** When the schedule is due on a "YYYY-MM-DD" day, or null if it isn't. */
+export function dueOn(schedule: HeartCheckSchedule, dateKey: string) {
   if (!schedule.enabled) return null
-  const today = new Date(now)
-  const key = toDateKey(today)
   const scheduled =
     schedule.days.length === 0
-      ? schedule.date === key
-      : schedule.days.includes(today.getDay())
-  if (!scheduled) return null
-  const due = at(key, schedule.time)
-  return due.getTime() <= now ? due : null
+      ? schedule.date === dateKey
+      : schedule.days.includes(at(dateKey, "00:00").getDay())
+  return scheduled ? at(dateKey, schedule.time) : null
+}
+
+/** When the schedule was due earlier today, or null if it wasn't. */
+export function dueEarlierToday(schedule: HeartCheckSchedule, now: number) {
+  const due = dueOn(schedule, toDateKey(new Date(now)))
+  return due && due.getTime() <= now ? due : null
 }
 
 /** "06:30" → { clock: "6:30", period: "AM" } */

@@ -15,6 +15,7 @@ import { cn } from "cn"
 import { ConfirmDelete } from "@/components/confirm-delete"
 import { FilterChips } from "@/components/filter-chips"
 import { HeartCheckDueCard } from "@/components/heart-check-due-card"
+import { HeartCheckWeek } from "@/components/heart-check-week"
 import { PageHeader } from "@/components/page-header"
 import { Button } from "@/components/ui/button"
 import {
@@ -84,6 +85,7 @@ function HeartCheckList() {
   const [form, setForm] = React.useState<{
     key: number
     today: string
+    date?: string
     check?: HeartCheck
   }>({ key: 0, today: "" })
   const [viewing, setViewing] = React.useState<HeartCheck | null>(null)
@@ -97,6 +99,16 @@ function HeartCheckList() {
       key: current.key + 1,
       today: toDateKey(new Date()),
       check,
+    }))
+    setAdding(true)
+  }
+
+  /** Open the form to add a heart check for a past "YYYY-MM-DD" day. */
+  function openFormFor(date: string) {
+    setForm((current) => ({
+      key: current.key + 1,
+      today: toDateKey(new Date()),
+      date,
     }))
     setAdding(true)
   }
@@ -137,6 +149,7 @@ function HeartCheckList() {
       />
       <main className="mx-auto flex w-full max-w-2xl flex-col gap-3 px-4 py-4">
         <HeartCheckDueCard onOpen={() => openForm()} />
+        <HeartCheckWeek onAdd={openFormFor} />
 
         {checks.length === 0 ? (
           <Empty>
@@ -254,6 +267,7 @@ function HeartCheckList() {
           <HeartCheckForm
             key={form.key}
             today={form.today}
+            date={form.date}
             check={form.check}
             onDone={() => setAdding(false)}
           />
@@ -367,11 +381,14 @@ function Hearts({ level, className }: { level: number; className?: string }) {
 
 function HeartCheckForm({
   today,
+  date: initialDate,
   check,
   onDone,
 }: {
   /** "YYYY-MM-DD"; the default date and the latest one allowed. */
   today: string
+  /** "YYYY-MM-DD" to start a new check on instead of `today`. */
+  date?: string
   /** The heart check to edit; omit to add a new one. */
   check?: HeartCheck
   onDone: () => void
@@ -403,7 +420,7 @@ function HeartCheckForm({
           <Input
             name="date"
             type="date"
-            defaultValue={check?.date ?? today}
+            defaultValue={check?.date ?? initialDate ?? today}
             max={today}
             required
           />

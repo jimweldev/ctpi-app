@@ -8,6 +8,7 @@ import {
 } from "lucide-react"
 import { cn } from "cn"
 
+import { ChurchLinks } from "@/components/church-links"
 import { HeartCheckCount } from "@/components/heart-check-count"
 import { HeartCheckDueCard } from "@/components/heart-check-due-card"
 import { MemoryVerseCount } from "@/components/memory-verse-count"
@@ -112,6 +113,8 @@ export default function HomePage() {
                 />
               </div>
             </section>
+
+            <ChurchLinks />
 
             {latest && (
               <SermonNoteQuote

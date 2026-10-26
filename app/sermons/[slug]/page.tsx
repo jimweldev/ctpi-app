@@ -1,7 +1,12 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import { ChevronLeftIcon, ChevronRightIcon } from "lucide-react"
+import {
+  CalendarIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  UserIcon,
+} from "lucide-react"
 import { cn } from "cn"
 
 import { PageHeader } from "@/components/page-header"
@@ -42,6 +47,7 @@ export default async function SermonPage(props: PageProps<"/sermons/[slug]">) {
   const tabs: SermonTab[] = points.map((blocks, index) => ({
     value: `point-${index + 1}`,
     label: `Point ${index + 1}`,
+    title: blocks[0]?.type === "point" ? blocks[0].title : undefined,
     content: (
       <SermonContent
         blocks={blocks}
@@ -54,6 +60,7 @@ export default async function SermonPage(props: PageProps<"/sermons/[slug]">) {
     tabs.push({
       value: "outro",
       label: "Outro",
+      title: "Closing",
       content: <SermonContent blocks={sermon.outro} />,
     })
   }
@@ -77,37 +84,48 @@ export default async function SermonPage(props: PageProps<"/sermons/[slug]">) {
         back={{ href: "/sermons", label: "Sermons" }}
       />
       <main className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-4">
-        <header className="flex flex-col gap-3 rounded-3xl bg-hero p-6 text-hero-foreground shadow-lg">
+        <header className="flex flex-col gap-4 rounded-3xl bg-hero p-6 text-hero-foreground">
           {seriesInfo && (
-            <p className="text-sm font-semibold text-gold">
-              {seriesInfo.title}
-            </p>
+            <div className="flex items-center justify-between gap-3">
+              <p className="min-w-0 truncate text-sm font-semibold text-gold">
+                {seriesInfo.title}
+              </p>
+              <span className="shrink-0 rounded-full bg-gold px-2.5 py-1 text-xs font-semibold text-gold-foreground">
+                Part {seriesInfo.part}
+              </span>
+            </div>
           )}
-          <h2 className="text-3xl leading-tight font-bold tracking-tight">
-            {sermon.title}
-          </h2>
-          {sermon.subtitle && (
-            <p className="-mt-1 text-lg font-semibold">{sermon.subtitle}</p>
-          )}
-          {seriesInfo?.subtitle && (
-            <p className="opacity-80">{seriesInfo.subtitle}</p>
-          )}
-          <p className="text-sm opacity-70">
-            {[sermon.speaker, formatSermonDate(sermon.date)]
-              .filter(Boolean)
-              .join(" · ")}
-          </p>
-          {seriesInfo && (
-            <span className="mt-1 w-fit rounded-full bg-gold px-2.5 py-1 text-xs font-bold text-gold-foreground">
-              Part {seriesInfo.part}
+          <div className="flex flex-col gap-2">
+            <h2 className="text-3xl leading-[1.1] font-bold tracking-tight text-balance">
+              {sermon.title}
+            </h2>
+            {sermon.subtitle && (
+              <p className="font-serif text-lg italic opacity-90">
+                {sermon.subtitle}
+              </p>
+            )}
+            {seriesInfo?.subtitle && (
+              <p className="text-sm opacity-75">{seriesInfo.subtitle}</p>
+            )}
+          </div>
+          <div className="flex flex-wrap gap-x-4 gap-y-1 border-t border-hero-foreground/15 pt-4 text-sm opacity-80">
+            {sermon.speaker && (
+              <span className="flex items-center gap-1.5">
+                <UserIcon className="size-4" />
+                {sermon.speaker}
+              </span>
+            )}
+            <span className="flex items-center gap-1.5">
+              <CalendarIcon className="size-4" />
+              {formatSermonDate(sermon.date)}
             </span>
-          )}
+          </div>
         </header>
 
         <SermonTabs tabs={tabs} />
 
         {(previous || next) && (
-          <nav className="mt-6 grid grid-cols-2 gap-3">
+          <nav className="mt-4 grid grid-cols-2 gap-3">
             {previous && <SeriesLink sermon={previous} direction="previous" />}
             {next && <SeriesLink sermon={next} direction="next" />}
           </nav>

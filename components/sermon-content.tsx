@@ -40,24 +40,20 @@ function SermonBlock({
       return <VerseCard verse={block} />
     case "note":
       return (
-        <div className="flex flex-col gap-3 rounded-r-xl border-l-4 border-gold bg-accent/60 py-3 pr-4 pl-4 text-base font-medium text-foreground">
+        <div className="flex flex-col gap-3 text-[1.0625rem] leading-relaxed text-foreground">
           <FormattedText text={block.text} />
         </div>
       )
     case "point":
       return (
-        <section className="mt-8 flex flex-col gap-4">
-          <h2 className="flex items-start gap-3">
-            <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-gold text-base font-bold text-gold-foreground">
+        <section className="mt-8 flex flex-col gap-5">
+          <h2 className="flex flex-col gap-3">
+            <span className="flex size-11 items-center justify-center rounded-2xl bg-gold text-xl font-bold text-gold-foreground">
               {pointNumber}
             </span>
-            <span className="flex flex-col">
-              <span className="text-sm font-medium text-muted-foreground">
-                Point {pointNumber}
-              </span>
-              <span className="text-xl leading-tight font-bold tracking-tight">
-                {block.title}
-              </span>
+            <span className="text-2xl leading-tight font-bold tracking-tight text-balance">
+              <span className="sr-only">Point {pointNumber}: </span>
+              {block.title}
             </span>
           </h2>
           <SermonContent blocks={block.content} />
@@ -65,7 +61,7 @@ function SermonBlock({
       )
     case "section":
       return (
-        <section className="mt-8 flex flex-col gap-4 rounded-3xl bg-secondary p-5">
+        <section className="mt-6 flex flex-col gap-4 rounded-3xl bg-secondary/70 p-5">
           <h2 className="text-base font-bold tracking-tight text-secondary-foreground">
             {block.title}
           </h2>
@@ -79,19 +75,17 @@ function VerseCard({ verse }: { verse: Omit<Verse, "type"> }) {
   const showNumbers = verse.verses.length > 1
 
   return (
-    <figure className="flex flex-col gap-3 rounded-2xl bg-card p-5 ring-1 ring-foreground/6">
+    <figure className="relative flex flex-col gap-3 overflow-hidden rounded-2xl bg-card p-5 pl-6 ring-1 ring-foreground/6 before:absolute before:inset-y-0 before:left-0 before:w-1 before:bg-gold">
       <figcaption className="flex items-center gap-2">
-        <span className="flex size-7 items-center justify-center rounded-full bg-secondary text-primary">
-          <BookOpenIcon className="size-3.5" />
-        </span>
-        <span className="font-semibold">{verse.reference}</span>
+        <BookOpenIcon className="size-4 text-gold-text" />
+        <span className="text-sm font-semibold">{verse.reference}</span>
         {verse.version && (
-          <span className="rounded-full bg-muted px-2 py-0.5 text-[0.625rem] font-semibold tracking-wide text-muted-foreground">
+          <span className="rounded-full bg-muted px-2 py-0.5 text-[0.6875rem] font-medium text-muted-foreground">
             {verse.version}
           </span>
         )}
       </figcaption>
-      <blockquote className="font-serif text-[1.0625rem] leading-relaxed whitespace-pre-line">
+      <blockquote className="font-serif text-lg leading-relaxed whitespace-pre-line">
         {verse.verses.map((v) => (
           <span key={v.number}>
             {showNumbers && (

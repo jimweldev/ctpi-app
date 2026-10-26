@@ -254,7 +254,7 @@
         },
         {
           "type": "note",
-          "text": "Defend with the armor.\nAdvance with the armor.\nAttack with the Word."
+          "text": "->Defend with the armor.\nAdvance with the armor.\nAttack with the Word.<-"
         },
         {
           "type": "point",

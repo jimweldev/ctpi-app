@@ -3,12 +3,13 @@
 import * as React from "react"
 import { ChevronRightIcon } from "lucide-react"
 
-import { Button } from "@/components/ui/button"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 export type SermonTab = {
   value: string
   label: string
+  /** Shown on the "Up next" card, e.g. the point's title. */
+  title?: string
   content: React.ReactNode
 }
 
@@ -36,10 +37,14 @@ function SermonTabs({ tabs }: { tabs: SermonTab[] }) {
       onValueChange={(next) => select(String(next))}
       className="scroll-mt-[calc(3.5rem+env(safe-area-inset-top))] gap-5"
     >
-      <div className="sticky top-[calc(3.5rem+env(safe-area-inset-top))] z-20 -mx-4 bg-background/85 px-4 py-2 backdrop-blur-xl">
-        <TabsList className="h-10! w-full [scrollbar-width:none] overflow-x-auto">
+      <div className="sticky top-[calc(3.5rem+env(safe-area-inset-top))] z-20 -mx-4 bg-background/80 py-2 backdrop-blur-xl">
+        <TabsList className="h-auto! w-full [scrollbar-width:none] justify-start gap-1.5 overflow-x-auto bg-transparent px-4 py-0.5">
           {tabs.map((tab) => (
-            <TabsTrigger key={tab.value} value={tab.value} className="px-3">
+            <TabsTrigger
+              key={tab.value}
+              value={tab.value}
+              className="h-9 flex-none rounded-full bg-card px-4 text-muted-foreground ring-1 ring-foreground/6 after:hidden data-active:bg-foreground data-active:text-background data-active:shadow-none data-active:ring-foreground dark:data-active:border-transparent dark:data-active:bg-foreground dark:data-active:text-background"
+            >
               {tab.label}
             </TabsTrigger>
           ))}
@@ -55,15 +60,23 @@ function SermonTabs({ tabs }: { tabs: SermonTab[] }) {
           >
             {tab.content}
             {next && (
-              <Button
-                variant="secondary"
-                size="lg"
-                className="self-end"
+              <button
+                type="button"
                 onClick={() => select(next.value)}
+                className="mt-2 flex items-center gap-3 rounded-2xl bg-card p-4 text-left ring-1 ring-foreground/6 transition-transform active:scale-[0.98]"
               >
-                Next: {next.label}
-                <ChevronRightIcon />
-              </Button>
+                <span className="flex min-w-0 flex-1 flex-col gap-0.5">
+                  <span className="text-xs text-muted-foreground">
+                    Up next: {next.label}
+                  </span>
+                  <span className="truncate font-semibold">
+                    {next.title ?? next.label}
+                  </span>
+                </span>
+                <span className="flex size-9 shrink-0 items-center justify-center rounded-full bg-primary text-primary-foreground">
+                  <ChevronRightIcon className="size-5" />
+                </span>
+              </button>
             )}
           </TabsContent>
         )

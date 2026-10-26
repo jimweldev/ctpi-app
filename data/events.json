@@ -1,12 +1,34 @@
 {
   "events": [
     {
+      "id": "workers-conference-2026-11",
+      "title": "Workers' Conference",
+      "date": "2026-11-06",
+      "time": "18:00",
+      "image": "/events/workers-conference.jpg",
+      "imageAlt": "Workers' Conference, November 6, 6 PM"
+    },
+    {
       "id": "water-baptism-2026-11",
       "title": "Water Baptism",
       "date": "2026-11-07",
       "time": "08:00",
       "image": "/events/water-baptism.jpg",
       "imageAlt": "Water Baptism, November 7, Saturday 8 AM"
+    },
+    {
+      "id": "morning-watch",
+      "title": "Morning Watch",
+      "schedule": "Weekdays at 5 AM (Monday to Friday)",
+      "image": "/events/morning-watch.jpg",
+      "imageAlt": "Morning Watch, weekdays at 5 AM, Monday to Friday"
+    },
+    {
+      "id": "anniversary-shirts-2026",
+      "title": "Anniversary shirts now available",
+      "details": "CTPI 73rd anniversary shirts: \"Abide. Once saved, stay saved.\" (John 15:6)",
+      "image": "/events/anniversary-shirts.jpg",
+      "imageAlt": "Light blue Abide anniversary shirts, front and back"
     }
   ]
 }

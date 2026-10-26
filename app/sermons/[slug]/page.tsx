@@ -79,11 +79,13 @@ export default async function SermonPage(props: PageProps<"/sermons/[slug]">) {
       <main className="mx-auto flex w-full max-w-2xl flex-col gap-6 px-4 py-4">
         <header className="flex flex-col gap-3 rounded-3xl bg-hero p-6 text-hero-foreground shadow-lg">
           {seriesInfo && (
-            <p className="text-xs font-bold tracking-widest text-gold uppercase">
+            <p className="text-sm font-semibold text-gold">
               {seriesInfo.title}
             </p>
           )}
-          <h2 className="text-3xl leading-tight font-bold">{sermon.title}</h2>
+          <h2 className="text-3xl leading-tight font-bold tracking-tight">
+            {sermon.title}
+          </h2>
           {sermon.subtitle && (
             <p className="-mt-1 text-lg font-semibold">{sermon.subtitle}</p>
           )}
@@ -129,7 +131,7 @@ function SeriesLink({
     <Link
       href={`/sermons/${sermon.slug}`}
       className={cn(
-        "flex items-center gap-2 rounded-2xl bg-card p-4 shadow-xs ring-1 ring-foreground/8 transition-transform active:scale-[0.98]",
+        "flex items-center gap-2 rounded-2xl bg-card p-4 ring-1 ring-foreground/6 transition-transform active:scale-[0.98]",
         isNext && "col-start-2 flex-row-reverse text-right"
       )}
     >

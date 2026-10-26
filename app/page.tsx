@@ -24,7 +24,7 @@ export default function HomePage() {
 
   return (
     <>
-      <header className="bg-hero pt-[env(safe-area-inset-top)] text-hero-foreground">
+      <header className="rounded-b-[2rem] bg-hero pt-[env(safe-area-inset-top)] text-hero-foreground">
         <div className="mx-auto flex max-w-2xl flex-col items-center gap-3 px-5 pt-5 pb-16 text-center">
           <h1>
             <Image
@@ -51,7 +51,7 @@ export default function HomePage() {
             className="flex flex-col gap-4 rounded-3xl bg-card p-5 shadow-lg ring-1 ring-foreground/8 transition-transform active:scale-[0.98]"
           >
             <div className="flex items-center justify-between">
-              <span className="rounded-full bg-gold px-2.5 py-1 text-[0.6875rem] font-bold tracking-wider text-gold-foreground uppercase">
+              <span className="rounded-full bg-gold px-2.5 py-1 text-xs font-semibold text-gold-foreground">
                 Latest sermon
               </span>
               <span className="text-xs text-muted-foreground">
@@ -68,7 +68,9 @@ export default function HomePage() {
                   </span>
                 </p>
               )}
-              <p className="text-2xl leading-tight font-bold">{latest.title}</p>
+              <p className="text-2xl leading-tight font-bold tracking-tight">
+                {latest.title}
+              </p>
             </div>
             <span className="flex h-11 items-center justify-center gap-1 rounded-full bg-primary text-sm font-semibold text-primary-foreground">
               Read sermon
@@ -85,10 +87,8 @@ export default function HomePage() {
 
           <TabsContent value="dashboard" className="flex flex-col gap-6">
             <section className="flex flex-col gap-3">
-              <h2 className="px-1 text-xs font-medium tracking-widest text-muted-foreground uppercase">
-                Grow
-              </h2>
-              <div className="flex flex-col divide-y divide-foreground/8 overflow-hidden rounded-3xl bg-card shadow-xs ring-1 ring-foreground/8">
+              <h2 className="px-1 text-base font-bold tracking-tight">Grow</h2>
+              <div className="flex flex-col divide-y divide-foreground/6 overflow-hidden rounded-3xl bg-card ring-1 ring-foreground/6">
                 <QuickLink
                   href="/sermons"
                   icon={<BookOpenIcon className="size-5" />}

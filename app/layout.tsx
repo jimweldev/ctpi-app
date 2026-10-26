@@ -1,5 +1,5 @@
 import type { Metadata, Viewport } from "next"
-import { Geist_Mono, Inter, Lora } from "next/font/google"
+import { Geist_Mono, Lora, Plus_Jakarta_Sans } from "next/font/google"
 
 import "./globals.css"
 import { BottomNav } from "@/components/bottom-nav"
@@ -8,7 +8,10 @@ import { ThemeProvider } from "@/components/theme-provider"
 import { fontSizeScript } from "@/lib/font-size-script"
 import { cn } from "@/lib/utils"
 
-const inter = Inter({ subsets: ["latin"], variable: "--font-sans" })
+const fontSans = Plus_Jakarta_Sans({
+  subsets: ["latin"],
+  variable: "--font-sans",
+})
 
 // Scripture text: a book-like serif that echoes the "Calvary" wordmark.
 const fontSerif = Lora({ subsets: ["latin"], variable: "--font-serif" })
@@ -34,11 +37,8 @@ export const metadata: Metadata = {
 }
 
 export const viewport: Viewport = {
-  // Matches --background in globals.css for each color scheme.
-  themeColor: [
-    { media: "(prefers-color-scheme: light)", color: "#fcfaf3" },
-    { media: "(prefers-color-scheme: dark)", color: "#0c091f" },
-  ],
+  // Matches the light --background in globals.css (light is the default).
+  themeColor: "#f6f6f9",
   width: "device-width",
   initialScale: 1,
   viewportFit: "cover",
@@ -58,14 +58,14 @@ export default function RootLayout({
         fontMono.variable,
         fontSerif.variable,
         "font-sans",
-        inter.variable
+        fontSans.variable
       )}
     >
       <head>
         {/* Apply the saved font size before first paint (no size flash). */}
         <script dangerouslySetInnerHTML={{ __html: fontSizeScript }} />
       </head>
-      <body className="min-h-svh bg-background pb-[calc(4rem+env(safe-area-inset-bottom))]">
+      <body className="min-h-svh bg-background pb-[calc(5.5rem+env(safe-area-inset-bottom))]">
         <ThemeProvider>
           {children}
           <BottomNav />

@@ -65,7 +65,7 @@ function VerseLibrary({
           const saved = isSaved(verse)
           return (
             <li key={verse.id}>
-              <figure className="flex flex-col gap-3 rounded-2xl bg-card p-5 shadow-xs ring-1 ring-foreground/8">
+              <figure className="flex flex-col gap-3 rounded-2xl bg-card p-5 ring-1 ring-foreground/6">
                 <figcaption className="flex items-center gap-2">
                   <span className="font-semibold">{verse.reference}</span>
                   {verse.version && (

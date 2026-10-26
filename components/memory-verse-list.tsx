@@ -243,7 +243,7 @@ function MemoryVerseCard({
     <div
       ref={ref}
       className={cn(
-        "flex items-center rounded-2xl bg-card shadow-xs ring-1 ring-foreground/8",
+        "flex items-center rounded-2xl bg-card ring-1 ring-foreground/6",
         isDragging && "z-10 shadow-lg ring-primary/40"
       )}
     >
@@ -299,7 +299,7 @@ function StatusPill({
   return (
     <span
       className={cn(
-        "shrink-0 rounded-full px-2 py-0.5 text-[0.625rem] font-bold tracking-wider uppercase",
+        "shrink-0 rounded-full px-2 py-0.5 text-xs font-semibold",
         STATUS_STYLES[status],
         className
       )}
@@ -320,7 +320,7 @@ function MemoryProgress({ verses }: { verses: MemoryVerse[] }) {
   const segments = [...counts].reverse()
 
   return (
-    <div className="flex flex-col gap-3 rounded-3xl bg-card p-5 shadow-xs ring-1 ring-foreground/8">
+    <div className="flex flex-col gap-3 rounded-3xl bg-card p-5 ring-1 ring-foreground/6">
       <p className="flex items-baseline gap-1.5">
         <span className="text-2xl leading-none font-bold">{memorized}</span>
         <span className="text-sm text-muted-foreground">

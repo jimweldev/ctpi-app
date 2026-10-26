@@ -94,11 +94,11 @@ function SermonList({
       />
       {selectedSeries && (
         <div className="flex flex-col gap-1 rounded-3xl bg-hero p-5 text-hero-foreground">
-          <span className="text-[0.6875rem] font-bold tracking-wider text-gold uppercase">
+          <span className="text-sm font-semibold text-gold">
             Series · {sermons.filter((s) => s.series?.slug === filter).length}{" "}
             parts
           </span>
-          <p className="text-xl leading-tight font-bold">
+          <p className="text-xl leading-tight font-bold tracking-tight">
             {selectedSeries.title}
           </p>
           {selectedSeries.subtitle && (
@@ -123,7 +123,7 @@ function SermonList({
       ) : (
         groupByMonth(shown).map((group) => (
           <section key={group.month} className="flex flex-col gap-3">
-            <h2 className="px-1 pt-1 text-xs font-medium tracking-widest text-muted-foreground uppercase">
+            <h2 className="px-1 pt-2 text-sm font-semibold text-muted-foreground">
               {formatMonth(group.month)}
             </h2>
             <ul className="flex flex-col gap-3">
@@ -146,10 +146,10 @@ function SermonRow({ sermon }: { sermon: SermonListItem }) {
   return (
     <Link
       href={`/sermons/${sermon.slug}`}
-      className="flex items-center gap-4 rounded-2xl bg-card p-4 shadow-xs ring-1 ring-foreground/8 transition-transform active:scale-[0.98]"
+      className="flex items-center gap-4 rounded-2xl bg-card p-4 ring-1 ring-foreground/6 transition-transform active:scale-[0.98]"
     >
       <span className="flex size-14 shrink-0 flex-col items-center justify-center rounded-xl bg-secondary text-secondary-foreground">
-        <span className="text-[0.625rem] font-bold tracking-wider uppercase">
+        <span className="text-[0.6875rem] font-medium">
           {date.toLocaleDateString("en-US", { weekday: "short" })}
         </span>
         <span className="text-xl leading-none font-bold">
@@ -159,7 +159,7 @@ function SermonRow({ sermon }: { sermon: SermonListItem }) {
       <span className="flex min-w-0 flex-1 flex-col gap-1">
         {sermon.series && (
           <span className="flex items-center gap-1.5">
-            <span className="shrink-0 rounded-full bg-brand-red/10 px-2 py-0.5 text-[0.625rem] font-bold tracking-wider text-brand-red uppercase">
+            <span className="shrink-0 rounded-full bg-brand-red/10 px-2 py-0.5 text-xs font-semibold text-brand-red">
               Part {sermon.series.part}
             </span>
             <span className="truncate text-xs text-muted-foreground">

@@ -285,7 +285,7 @@ function HeartCheckCard({
     <button
       type="button"
       onClick={onOpen}
-      className="flex items-center gap-3 rounded-2xl bg-card p-5 text-left shadow-xs ring-1 ring-foreground/8 transition-transform active:scale-[0.98]"
+      className="flex items-center gap-3 rounded-2xl bg-card p-5 text-left ring-1 ring-foreground/6 transition-transform active:scale-[0.98]"
     >
       <span className="flex flex-1 flex-col gap-1">
         <span className="flex items-center gap-2">

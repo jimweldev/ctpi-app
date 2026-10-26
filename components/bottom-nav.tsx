@@ -38,8 +38,8 @@ function BottomNav() {
   }, [heartCheckDue])
 
   return (
-    <nav className="fixed inset-x-0 bottom-0 z-40 border-t bg-card/85 pb-[env(safe-area-inset-bottom)] backdrop-blur-xl">
-      <ul className="mx-auto grid h-16 max-w-2xl grid-cols-5">
+    <nav className="pointer-events-none fixed inset-x-0 bottom-0 z-40 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))]">
+      <ul className="pointer-events-auto mx-auto grid h-16 max-w-md grid-cols-5 rounded-full bg-card/85 px-1 shadow-[0_8px_30px_-6px_oklch(0.2_0.04_284.5/0.18)] ring-1 ring-foreground/6 backdrop-blur-xl">
         {tabs.map(({ href, label, icon: Icon }) => {
           const active =
             href === "/" ? pathname === "/" : pathname.startsWith(href)
@@ -51,15 +51,14 @@ function BottomNav() {
                 aria-current={active ? "page" : undefined}
                 aria-label={dot ? `${label}, due now` : undefined}
                 className={cn(
-                  "group flex h-full flex-col items-center justify-center gap-1 text-[0.6875rem] font-medium text-muted-foreground transition-colors",
-                  active && "text-foreground"
+                  "group flex h-full flex-col items-center justify-center gap-0.5 text-[0.625rem] font-medium text-muted-foreground transition-colors",
+                  active && "font-semibold text-primary"
                 )}
               >
                 <span
                   className={cn(
-                    "relative flex h-8 w-14 items-center justify-center rounded-full transition-colors group-active:bg-muted",
-                    active &&
-                      "bg-secondary text-primary group-active:bg-secondary"
+                    "relative flex h-7 w-12 items-center justify-center rounded-full transition-colors group-active:bg-muted",
+                    active && "bg-secondary group-active:bg-secondary"
                   )}
                 >
                   <Icon
@@ -72,7 +71,7 @@ function BottomNav() {
                   {dot && (
                     <span
                       aria-hidden
-                      className="absolute top-1 right-3.5 size-2.5 rounded-full bg-brand-red ring-2 ring-card"
+                      className="absolute top-0.5 right-3 size-2.5 rounded-full bg-brand-red ring-2 ring-card"
                     />
                   )}
                 </span>

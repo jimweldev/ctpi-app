@@ -63,7 +63,7 @@ export default function SettingsPage() {
             </SettingsSection>
 
             <SettingsSection title="Copyright">
-              <div className="flex flex-col gap-3 rounded-2xl bg-card p-4 text-xs leading-relaxed text-muted-foreground shadow-xs ring-1 ring-foreground/8">
+              <div className="flex flex-col gap-3 rounded-2xl bg-card p-4 text-xs leading-relaxed text-muted-foreground ring-1 ring-foreground/6">
                 <p className="text-sm font-medium text-foreground">
                   Calvary Temple Philippines Inc.
                 </p>
@@ -120,7 +120,7 @@ function SettingsSection({
 }) {
   return (
     <section className="flex flex-col gap-2">
-      <h2 className="px-1 text-xs font-medium tracking-widest text-muted-foreground uppercase">
+      <h2 className="px-1 text-sm font-semibold text-muted-foreground">
         {title}
       </h2>
       {children}

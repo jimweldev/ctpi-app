@@ -151,7 +151,7 @@ function ScheduleCard({
   const { clock, period } = formatTime(schedule.time)
 
   return (
-    <article className="flex items-center gap-3 rounded-2xl bg-card p-5 shadow-xs ring-1 ring-foreground/8">
+    <article className="flex items-center gap-3 rounded-2xl bg-card p-5 ring-1 ring-foreground/6">
       <button
         type="button"
         onClick={onEdit}

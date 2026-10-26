@@ -25,7 +25,7 @@ function HeartCheckWeek({ onAdd }: { onAdd: (date: string) => void }) {
   if (!week?.scheduled) return null
 
   return (
-    <section className="flex flex-col gap-3 rounded-3xl bg-card p-4 shadow-xs ring-1 ring-foreground/8">
+    <section className="flex flex-col gap-3 rounded-3xl bg-card p-4 ring-1 ring-foreground/6">
       <div className="flex items-baseline justify-between px-1">
         <h2 className="text-sm font-semibold">This week</h2>
         <p

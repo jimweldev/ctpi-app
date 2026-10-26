@@ -21,7 +21,7 @@ function FilterChips<T extends string>({
       role="radiogroup"
       aria-label={label}
       className={cn(
-        "-mx-4 flex [scrollbar-width:none] gap-2 overflow-x-auto px-4 pb-1",
+        "-mx-4 flex [scrollbar-width:none] gap-1.5 overflow-x-auto px-4 py-0.5",
         className
       )}
     >
@@ -35,8 +35,8 @@ function FilterChips<T extends string>({
             aria-checked={selected}
             onClick={() => onChange(option.value)}
             className={cn(
-              "flex h-11 shrink-0 items-center rounded-full bg-muted px-4 text-sm font-medium whitespace-nowrap text-muted-foreground transition-colors",
-              selected && "bg-primary text-primary-foreground"
+              "flex h-8 shrink-0 items-center rounded-full bg-card px-3 text-xs font-medium whitespace-nowrap text-muted-foreground ring-1 ring-foreground/6 transition-colors",
+              selected && "bg-foreground text-background ring-foreground"
             )}
           >
             {option.label}

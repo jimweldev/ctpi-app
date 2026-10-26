@@ -20,7 +20,7 @@ function SearchField({
   placeholder: string
 }) {
   return (
-    <InputGroup className="h-11 rounded-2xl bg-card">
+    <InputGroup className="h-11 rounded-full border-transparent bg-card px-1 ring-1 ring-foreground/6">
       <InputGroupAddon>
         <SearchIcon className="size-4.5" />
       </InputGroupAddon>

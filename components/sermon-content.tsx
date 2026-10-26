@@ -52,10 +52,10 @@ function SermonBlock({
               {pointNumber}
             </span>
             <span className="flex flex-col">
-              <span className="text-xs font-semibold tracking-widest text-muted-foreground uppercase">
+              <span className="text-sm font-medium text-muted-foreground">
                 Point {pointNumber}
               </span>
-              <span className="text-xl leading-tight font-bold">
+              <span className="text-xl leading-tight font-bold tracking-tight">
                 {block.title}
               </span>
             </span>
@@ -66,7 +66,7 @@ function SermonBlock({
     case "section":
       return (
         <section className="mt-8 flex flex-col gap-4 rounded-3xl bg-secondary p-5">
-          <h2 className="text-xs font-semibold tracking-widest text-secondary-foreground uppercase">
+          <h2 className="text-base font-bold tracking-tight text-secondary-foreground">
             {block.title}
           </h2>
           <SermonContent blocks={block.content} />
@@ -79,7 +79,7 @@ function VerseCard({ verse }: { verse: Omit<Verse, "type"> }) {
   const showNumbers = verse.verses.length > 1
 
   return (
-    <figure className="flex flex-col gap-3 rounded-2xl bg-card p-5 shadow-xs ring-1 ring-foreground/8">
+    <figure className="flex flex-col gap-3 rounded-2xl bg-card p-5 ring-1 ring-foreground/6">
       <figcaption className="flex items-center gap-2">
         <span className="flex size-7 items-center justify-center rounded-full bg-secondary text-primary">
           <BookOpenIcon className="size-3.5" />

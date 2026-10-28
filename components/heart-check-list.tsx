@@ -38,10 +38,10 @@ import { Textarea } from "@/components/ui/textarea"
 import { formatDay, toDateKey, useNow } from "@/lib/heart-check-schedules"
 import {
   addHeartCheck,
-  getHeartLevel,
-  HEART_LEVELS,
+  getSoil,
   type HeartCheck,
-  type HeartLevel,
+  type Soil,
+  SOILS,
   removeHeartCheck,
   updateHeartCheck,
   useHeartChecks,
@@ -279,7 +279,7 @@ function HeartCheckCard({
   check: HeartCheck
   onOpen: () => void
 }) {
-  const { label } = getHeartLevel(check.level)
+  const { label, level } = getSoil(check.soil)
 
   return (
     <button
@@ -289,7 +289,7 @@ function HeartCheckCard({
     >
       <span className="flex flex-1 flex-col gap-1">
         <span className="flex items-center gap-2">
-          <Hearts level={check.level} />
+          <Hearts level={level} />
           <span className="font-semibold">{label}</span>
         </span>
         <time dateTime={check.date} className="text-xs text-muted-foreground">
@@ -310,12 +310,12 @@ function HeartCheckDetails({
   onEdit: () => void
   onDone: () => void
 }) {
-  const { label, description } = getHeartLevel(check.level)
+  const { label, level, description } = getSoil(check.soil)
 
   return (
     <div className="flex min-h-0 flex-col">
       <DrawerHeader>
-        <Hearts level={check.level} className="[&>svg]:size-6" />
+        <Hearts level={level} className="[&>svg]:size-6" />
         <DrawerTitle>{label}</DrawerTitle>
         <DrawerDescription>
           {formatDay(check.date)} · {description}
@@ -357,10 +357,10 @@ function HeartCheckDetails({
 function Hearts({ level, className }: { level: number; className?: string }) {
   return (
     <span
-      aria-label={`${level} of ${HEART_LEVELS.length}`}
+      aria-label={`${level} of ${SOILS.length}`}
       className={cn("flex gap-0.5", className)}
     >
-      {HEART_LEVELS.map((item) => (
+      {SOILS.map((item) => (
         <HeartIcon
           key={item.level}
           aria-hidden
@@ -388,18 +388,16 @@ function HeartCheckForm({
   check?: HeartCheck
   onDone: () => void
 }) {
-  const [level, setLevel] = React.useState<HeartLevel | null>(
-    check?.level ?? null
-  )
+  const [soil, setSoil] = React.useState<Soil | null>(check?.soil ?? null)
 
   function onSubmit(event: React.FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (level === null) return
+    if (soil === null) return
     const form = new FormData(event.currentTarget)
     const date = String(form.get("date")) || today
     const details = String(form.get("details")).trim() || undefined
-    if (check) updateHeartCheck(check.id, { level, date, details })
-    else addHeartCheck({ level, date, details })
+    if (check) updateHeartCheck(check.id, { soil, date, details })
+    else addHeartCheck({ soil, date, details })
     onDone()
   }
 
@@ -407,7 +405,7 @@ function HeartCheckForm({
     <form onSubmit={onSubmit} className="flex min-h-0 flex-col">
       <DrawerHeader>
         <DrawerTitle>{check ? "Edit heart check" : "Heart check"}</DrawerTitle>
-        <DrawerDescription>Where is your heart today?</DrawerDescription>
+        <DrawerDescription>Which soil is your heart today?</DrawerDescription>
       </DrawerHeader>
       <div className="flex flex-col gap-5 overflow-y-auto p-4">
         <label className="flex flex-col gap-1.5">
@@ -420,22 +418,22 @@ function HeartCheckForm({
             required
           />
         </label>
-        <div role="radiogroup" aria-label="Level" className="grid gap-2">
-          {HEART_LEVELS.map((item) => {
-            const selected = level === item.level
+        <div role="radiogroup" aria-label="Soil" className="grid gap-2">
+          {SOILS.map((item) => {
+            const selected = soil === item.soil
             return (
               <button
                 key={item.level}
                 type="button"
                 role="radio"
                 aria-checked={selected}
-                onClick={() => setLevel(item.level)}
+                onClick={() => setSoil(item.soil)}
                 className={cn(
                   "flex items-center gap-4 rounded-2xl bg-muted/60 p-4 text-left ring-2 ring-transparent transition-colors",
                   selected && "bg-secondary ring-primary dark:ring-gold"
                 )}
               >
-                <Hearts level={item.level} className="w-14 shrink-0" />
+                <Hearts level={item.level} className="w-[4.5rem] shrink-0" />
                 <span className="flex flex-col">
                   <span className="font-semibold">{item.label}</span>
                   <span className="text-sm text-muted-foreground">
@@ -462,7 +460,7 @@ function HeartCheckForm({
         </label>
       </div>
       <DrawerFooter>
-        <Button type="submit" size="lg" disabled={level === null}>
+        <Button type="submit" size="lg" disabled={soil === null}>
           Save
         </Button>
       </DrawerFooter>

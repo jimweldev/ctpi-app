@@ -39,6 +39,7 @@ import {
 import { clearHeartChecks, useHeartChecks } from "@/lib/heart-checks"
 import { promptInstall, useInstallState } from "@/lib/install-prompt"
 import { clearMemoryVerses, useMemoryVerses } from "@/lib/memory-verses"
+import { clearPrayers, usePrayers } from "@/lib/prayers"
 
 const themes = [
   { value: "light", label: "Light", icon: SunIcon },
@@ -153,6 +154,7 @@ function BackupControls() {
         countLabel(added.memoryVerses, "memory verse"),
         countLabel(added.heartChecks, "heart check"),
         countLabel(added.heartCheckSchedules, "schedule"),
+        countLabel(added.prayers, "prayer"),
       ]
       setStatus({ error: false, message: `Imported ${parts.join(", ")}.` })
     } catch (error) {
@@ -264,7 +266,8 @@ function ClearDataButton() {
   const verseCount = useMemoryVerses().length
   const checkCount = useHeartChecks().length
   const scheduleCount = useHeartCheckSchedules().length
-  const count = verseCount + checkCount + scheduleCount
+  const prayerCount = usePrayers().length
+  const count = verseCount + checkCount + scheduleCount + prayerCount
   const [open, setOpen] = React.useState(false)
 
   return (
@@ -292,9 +295,10 @@ function ClearDataButton() {
             <AlertDialogDescription>
               This removes {verseCount} memory{" "}
               {verseCount === 1 ? "verse" : "verses"}, {checkCount} heart{" "}
-              {checkCount === 1 ? "check" : "checks"} and {scheduleCount}{" "}
-              {scheduleCount === 1 ? "schedule" : "schedules"} from this device.
-              This can&apos;t be undone.
+              {checkCount === 1 ? "check" : "checks"}, {scheduleCount}{" "}
+              {scheduleCount === 1 ? "schedule" : "schedules"} and {prayerCount}{" "}
+              {prayerCount === 1 ? "prayer" : "prayers"} from this device. This
+              can&apos;t be undone.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -305,6 +309,7 @@ function ClearDataButton() {
                 clearMemoryVerses()
                 clearHeartChecks()
                 clearHeartCheckSchedules()
+                clearPrayers()
                 setOpen(false)
               }}
             >

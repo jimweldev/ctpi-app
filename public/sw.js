@@ -1,5 +1,5 @@
 // Bump CACHE_VERSION to drop old caches after changing what gets precached.
-const CACHE_VERSION = "v5"
+const CACHE_VERSION = "v6"
 const CACHE_NAME = `ctpi-${CACHE_VERSION}`
 const OFFLINE_URL = "/offline.html"
 const PRECACHE_URLS = [
@@ -16,6 +16,7 @@ const PRECACHE_PAGES = [
   "/memory-verses",
   "/heart-check",
   "/heart-check/schedule",
+  "/prayer",
   "/settings",
 ]
 

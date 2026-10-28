@@ -5,6 +5,7 @@ import {
   BookOpenIcon,
   ChevronRightIcon,
   HeartIcon,
+  MessageCircleHeartIcon,
 } from "lucide-react"
 import { cn } from "cn"
 
@@ -12,6 +13,7 @@ import { ChurchLinks } from "@/components/church-links"
 import { HeartCheckCount } from "@/components/heart-check-count"
 import { HeartCheckDueCard } from "@/components/heart-check-due-card"
 import { MemoryVerseCount } from "@/components/memory-verse-count"
+import { PrayerCount } from "@/components/prayer-count"
 import { SermonNoteQuote } from "@/components/sermon-note-quote"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { UpcomingEvents } from "@/components/upcoming-events"
@@ -103,6 +105,13 @@ export default function HomePage() {
                   iconClassName="bg-accent text-accent-foreground"
                   title="Memory Verses"
                   detail={<MemoryVerseCount />}
+                />
+                <QuickLink
+                  href="/prayer"
+                  icon={<MessageCircleHeartIcon className="size-5" />}
+                  iconClassName="bg-gold/20 text-gold-text"
+                  title="Prayer"
+                  detail={<PrayerCount />}
                 />
                 <QuickLink
                   href="/heart-check"

@@ -48,7 +48,7 @@ export default function SettingsPage() {
 
             <SettingsSection
               title="Clear"
-              description="Memory verses, heart checks and schedules are stored on this device only."
+              description="Memory verses, prayers, heart checks and schedules are stored on this device only."
             >
               <ClearDataButton />
             </SettingsSection>

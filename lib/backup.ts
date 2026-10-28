@@ -6,6 +6,7 @@ import {
 } from "@/lib/heart-check-schedules"
 import { getHeartChecks, importHeartChecks } from "@/lib/heart-checks"
 import { getMemoryVerses, importMemoryVerses } from "@/lib/memory-verses"
+import { getPrayers, importPrayers } from "@/lib/prayers"
 
 /** Marks a file as a backup from this app; bump `version` on format changes. */
 const APP = "ctpi"
@@ -20,6 +21,7 @@ export function downloadBackup() {
     memoryVerses: getMemoryVerses(),
     heartChecks: getHeartChecks(),
     heartCheckSchedules: getHeartCheckSchedules(),
+    prayers: getPrayers(),
   }
   const blob = new Blob([JSON.stringify(backup, null, 2)], {
     type: "application/json",
@@ -54,5 +56,6 @@ export async function restoreBackup(file: File) {
       // Backups made before the rename call these alarms.
       list(backup.heartCheckSchedules ?? backup.heartCheckAlarms)
     ),
+    prayers: importPrayers(list(backup.prayers)),
   }
 }

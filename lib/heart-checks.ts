@@ -8,27 +8,72 @@ import { createLocalList } from "@/lib/local-list"
 /** A self-check of where your heart is, at one moment. */
 export type HeartCheck = {
   id: string
-  level: HeartLevel
+  soil: Soil
   details?: string
   /** Local "YYYY-MM-DD" the check is for; defaults to the day it was added. */
   date: string
   createdAt: number
 }
 
-export type HeartLevel = 1 | 2 | 3
+/** The four soils from the parable of the sower (Matthew 13:1-23). */
+export type Soil = "path" | "rocky" | "thorns" | "good"
 
-export const HEART_LEVELS: {
-  level: HeartLevel
+/** Least to most fruitful; `level` is the number of filled hearts. */
+export const SOILS: {
+  soil: Soil
+  level: number
   label: string
   description: string
 }[] = [
-  { level: 1, label: "Struggling", description: "My heart feels far from God" },
-  { level: 2, label: "Steady", description: "Holding on, with room to grow" },
-  { level: 3, label: "Thriving", description: "Close to God and full of love" },
+  {
+    soil: "path",
+    level: 1,
+    label: "Path",
+    description: "The word isn't taking root in me",
+  },
+  {
+    soil: "rocky",
+    level: 2,
+    label: "Rocky ground",
+    description: "I started well, but I'm wilting under pressure",
+  },
+  {
+    soil: "thorns",
+    level: 3,
+    label: "Among thorns",
+    description: "Worries and wants are choking the word",
+  },
+  {
+    soil: "good",
+    level: 4,
+    label: "Good soil",
+    description: "The word is growing and bearing fruit",
+  },
 ]
 
-export function getHeartLevel(level: HeartLevel) {
-  return HEART_LEVELS.find((item) => item.level === level) ?? HEART_LEVELS[0]
+export function getSoil(soil: Soil) {
+  return SOILS.find((item) => item.soil === soil) ?? SOILS[0]
+}
+
+/** Checks saved before the soils had a 1-3 `level` (Struggling, Steady, Thriving). */
+const LEGACY_SOILS: Record<number, Soil> = {
+  1: "rocky",
+  2: "thorns",
+  3: "good",
+}
+
+type StoredHeartCheck = Omit<HeartCheck, "soil"> & {
+  soil?: Soil
+  level?: number
+}
+
+function normalize({ level, ...check }: StoredHeartCheck): HeartCheck {
+  return {
+    ...check,
+    soil: check.soil ?? LEGACY_SOILS[level ?? 0] ?? "path",
+    // Checks saved before dates existed fall back to the day added.
+    date: check.date || toDateKey(new Date(check.createdAt)),
+  }
 }
 
 const { read, write, merge, useList } = createLocalList<HeartCheck>(
@@ -41,12 +86,7 @@ export function useHeartChecks() {
   return React.useMemo(
     () =>
       checks
-        // Checks saved before dates existed fall back to the day added.
-        .map((check) =>
-          check.date
-            ? check
-            : { ...check, date: toDateKey(new Date(check.createdAt)) }
-        )
+        .map(normalize)
         .sort(
           (a, b) => b.date.localeCompare(a.date) || b.createdAt - a.createdAt
         ),
@@ -55,7 +95,7 @@ export function useHeartChecks() {
 }
 
 export function addHeartCheck(
-  check: Pick<HeartCheck, "level" | "details" | "date">
+  check: Pick<HeartCheck, "soil" | "details" | "date">
 ) {
   write([
     { ...check, id: crypto.randomUUID(), createdAt: Date.now() },
@@ -73,10 +113,12 @@ export function clearHeartChecks() {
 
 export function updateHeartCheck(
   id: string,
-  patch: Partial<Pick<HeartCheck, "level" | "details" | "date">>
+  patch: Partial<Pick<HeartCheck, "soil" | "details" | "date">>
 ) {
   write(
-    read().map((check) => (check.id === id ? { ...check, ...patch } : check))
+    read().map((check) =>
+      check.id === id ? { ...normalize(check), ...patch } : check
+    )
   )
 }
 
@@ -84,14 +126,15 @@ export const getHeartChecks = read
 
 /** Add valid heart checks from a backup; returns how many were new. */
 export function importHeartChecks(items: unknown[]) {
-  return merge(items.filter(isHeartCheck))
+  return merge(items.filter(isHeartCheck).map(normalize))
 }
 
-function isHeartCheck(value: unknown): value is HeartCheck {
-  const check = value as HeartCheck
+function isHeartCheck(value: unknown): value is StoredHeartCheck {
+  const check = value as StoredHeartCheck
   return (
     typeof check?.id === "string" &&
-    HEART_LEVELS.some((item) => item.level === check.level) &&
+    (SOILS.some((item) => item.soil === check.soil) ||
+      (check.level ?? 0) in LEGACY_SOILS) &&
     typeof check.date === "string" &&
     typeof check.createdAt === "number"
   )

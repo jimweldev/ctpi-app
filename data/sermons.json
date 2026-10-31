@@ -1,12 +1,223 @@
 {
   "series": [
     {
+      "slug": "abide",
+      "title": "Abide",
+      "subtitle": "Once saved, stay saved"
+    },
+    {
       "slug": "prepare-to-fight-the-enemy",
       "title": "Prepare to fight the enemy",
       "subtitle": "The full armor of God for victory"
     }
   ],
   "sermons": [
+    {
+      "slug": "attach-to-christ-daily",
+      "title": "Attach to Christ daily",
+      "series": "abide",
+      "date": "2026-10-31",
+      "content": [
+        {
+          "type": "verse",
+          "reference": "John 15:4",
+          "version": "ESV",
+          "verses": [
+            {
+              "number": 4,
+              "text": "[Abide in me, and I in you.]{blue} As the branch cannot bear fruit by itself, unless it abides in the vine, neither can you, unless you abide in me."
+            }
+          ]
+        },
+        {
+          "type": "note",
+          "text": "**Abide** (*menō* in Greek) means to stay, remain, live, dwell, endure. It’s about being in a state that starts and keeps going, no expiry date needed. To abide is to settle in, to let roots dig deep.\n\nIt’s about remaining, staying, living, dwelling, continuing, enduring, being present, standing firm, tarrying, waiting it out, and holding on tight. It’s a vibe of steadiness and trust."
+        },
+        {
+          "type": "note",
+          "text": "*Manatili, manahan, tumira, sumunod, tiisin, maghintay, magpakatatag, igalang, pahintulutan*"
+        },
+        {
+          "type": "note",
+          "text": "We cannot survive, grow, or bear fruit on our own. We must stay attached to Christ daily. Just as a branch draws all its life from the vine, we draw everything we need when we abide in Him."
+        },
+        {
+          "type": "point",
+          "title": "Never stop talking to God",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "1 Thessalonians 5:17",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 17,
+                  "text": "[Never stop praying.]{blue}"
+                }
+              ]
+            },
+            {
+              "type": "verse",
+              "reference": "Luke 18:1",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 1,
+                  "text": "One day Jesus told his disciples a story to show that they should [always pray and never give up.]{blue}"
+                }
+              ]
+            },
+            {
+              "type": "verse",
+              "reference": "Ephesians 6:18",
+              "version": "NIV",
+              "verses": [
+                {
+                  "number": 18,
+                  "text": "And [pray in the Spirit on all occasions with all kinds of prayers and requests.]{blue} With this in mind, be alert and always keep on praying for all the Lord’s people."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "Prayer is not an emergency line, it is your lifeline. If you stop talking to God, you stop receiving life from Him."
+            },
+            {
+              "type": "verse",
+              "reference": "Jeremiah 33:3",
+              "version": "NIV",
+              "verses": [
+                {
+                  "number": 3,
+                  "text": "‘[Call to me and I will answer you]{blue} and tell you great and unsearchable things you do not know.’"
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "God will not reveal great things to those who only call occasionally, but to those who never stop calling."
+            }
+          ]
+        },
+        {
+          "type": "point",
+          "title": "Always attend fellowships",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "1 Corinthians 12:12-13",
+              "version": "NIV",
+              "verses": [
+                {
+                  "number": 12,
+                  "text": "Just as a body, though one, has many parts, but [all its many parts form one body, so it is with Christ.]{blue}"
+                },
+                {
+                  "number": 13,
+                  "text": "[For we were all baptized by one Spirit so as to form one body]{gold}—whether Jews or Gentiles, slave or free—and we were all given the one Spirit to drink."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "You cannot be attached to the Head while ignoring His body; to abide in Christ is to belong to His family."
+            },
+            {
+              "type": "verse",
+              "reference": "Hebrews 10:25",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 25,
+                  "text": "And [let us not neglect our meeting together,]{blue} as some people do, but encourage one another, especially now that [the day of his return is drawing near.]{gold}"
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "Isolation weakens faith, but fellowship keeps you attached to Christ."
+            },
+            {
+              "type": "verse",
+              "reference": "John 17:20-21",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 20,
+                  "text": "“I am praying not only for these disciples but also [for all who will ever believe in me through their message.]{blue}"
+                },
+                {
+                  "number": 21,
+                  "text": "[I pray that they will all be one, just as you and I are one]{gold}—as you are in me, Father, and I am in you. And may they be in us so that the world will believe you sent me."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "We remain attached to Christ daily when we remain attached to one another."
+            }
+          ]
+        },
+        {
+          "type": "point",
+          "title": "Worship God in all situations",
+          "content": [
+            {
+              "type": "note",
+              "text": "Worship keeps us connected to God. If we are truly attached to Christ daily, we will worship Him regardless of our situation."
+            },
+            {
+              "type": "verse",
+              "reference": "John 4:23-24",
+              "version": "NIV",
+              "verses": [
+                {
+                  "number": 23,
+                  "text": "Yet a time is coming and has now come when the true worshipers will [worship the Father in the Spirit and in truth,]{blue} [for they are the kind of worshipers the Father seeks.]{gold}"
+                },
+                {
+                  "number": 24,
+                  "text": "God is spirit, and his worshipers must worship in the Spirit and in truth.”"
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "God isn’t looking for perfect voices, He’s looking for hearts truly attached to Him."
+            },
+            {
+              "type": "verse",
+              "reference": "Acts 16:25-26",
+              "version": "NIV",
+              "verses": [
+                {
+                  "number": 25,
+                  "text": "[About midnight Paul and Silas were praying and singing hymns to God,]{blue} and the other prisoners were listening to them."
+                },
+                {
+                  "number": 26,
+                  "text": "Suddenly there was such a violent earthquake that the foundations of the prison were shaken. [At once all the prison doors flew open, and everyone’s chains came loose.]{gold}"
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "When you stay attached to Christ in worship, even midnight can become a moment of miracles."
+            },
+            {
+              "type": "note",
+              "text": "If you only worship when things are good, your worship depends on your situation. But if you worship in all situations, your situation will depend on your worship."
+            }
+          ]
+        }
+      ],
+      "outro": [
+        {
+          "type": "note",
+          "text": "Attach to Christ daily by never stopping your conversation with God, always staying connected to His people, and worshiping Him in every situation."
+        }
+      ]
+    },
     {
       "slug": "prepare-through-prayer",
       "title": "Prepare through prayer",

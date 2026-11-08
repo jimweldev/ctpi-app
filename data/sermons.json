@@ -13,6 +13,220 @@
   ],
   "sermons": [
     {
+      "slug": "believe-the-word",
+      "title": "Believe the word",
+      "series": "abide",
+      "date": "2026-11-07",
+      "content": [
+        {
+          "type": "verse",
+          "reference": "Hebrews 4:12",
+          "version": "NIV",
+          "verses": [
+            {
+              "number": 12,
+              "text": "For the word of God is alive and active. Sharper than any double-edged sword, it penetrates even to dividing soul and spirit, joints and marrow; it judges the thoughts and attitudes of the heart."
+            }
+          ]
+        },
+        {
+          "type": "verse",
+          "reference": "John 15:7",
+          "version": "ESV",
+          "verses": [
+            {
+              "number": 7,
+              "text": "[If you abide in me, and my words abide in you]{blue}, ask whatever you wish, and it will be done for you."
+            }
+          ]
+        },
+        {
+          "type": "point",
+          "title": "Build a daily habit of meditation",
+          "content": [
+            {
+              "type": "note",
+              "text": "If we are truly saved by abiding in Christ, we will practice daily reading, studying, and meditating on God’s word."
+            },
+            {
+              "type": "verse",
+              "reference": "Joshua 1:8",
+              "version": "NIV",
+              "verses": [
+                {
+                  "number": 8,
+                  "text": "[Keep this Book of the Law always on your lips]{blue}; [meditate on it day and night]{gold}, so that you may be careful to do everything written in it. Then you will be prosperous and successful."
+                }
+              ]
+            },
+            {
+              "type": "verse",
+              "reference": "Psalms 1:1-3",
+              "version": "ERV",
+              "verses": [
+                {
+                  "number": 1,
+                  "text": "Great blessings belong to those who don’t listen to evil advice, who don’t live like sinners, and who don’t join those who make fun of God."
+                },
+                {
+                  "number": 2,
+                  "text": "Instead, [they love the LORD’s teachings and think about them day and night.]{blue}"
+                },
+                {
+                  "number": 3,
+                  "text": "So they grow strong, like a tree planted by a stream—a tree that produces fruit when it should and has leaves that never fall. Everything they do is successful."
+                }
+              ]
+            },
+            {
+              "type": "verse",
+              "reference": "Deuteronomy 11:18-21",
+              "version": "NIV",
+              "verses": [
+                {
+                  "number": 18,
+                  "text": "[Fix these words of mine in your hearts and minds]{blue}; tie them as symbols on your hands and bind them on your foreheads."
+                },
+                {
+                  "number": 19,
+                  "text": "[Teach them to your children]{blue}, talking about them when you sit at home and when you walk along the road, when you lie down and when you get up."
+                },
+                {
+                  "number": 20,
+                  "text": "[Write them on the doorframes of your houses and on your gates]{blue},"
+                },
+                {
+                  "number": 21,
+                  "text": "[so that your days and the days of your children may be many in the land]{gold} the LORD swore to give your ancestors, as many as the days that the heavens are above the earth."
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "If you are truly saved by abiding in Christ, make daily meditation on His word your habit."
+            }
+          ]
+        },
+        {
+          "type": "point",
+          "title": "Act on the word, not just know it",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "James 2:14-26",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 14,
+                  "text": "What good is it, dear brothers and sisters, if you say you have faith but don’t show it by your actions? [Can that kind of faith save anyone?]{blue}"
+                },
+                {
+                  "number": 15,
+                  "text": "Suppose you see a brother or sister who has no food or clothing,"
+                },
+                {
+                  "number": 16,
+                  "text": "and you say, “Good-bye and have a good day; stay warm and eat well”—but then you don’t give that person any food or clothing. What good does that do?"
+                },
+                {
+                  "number": 17,
+                  "text": "[So you see, faith by itself isn’t enough.]{blue} [Unless it produces good deeds, it is dead and useless.]{gold}"
+                },
+                {
+                  "number": 18,
+                  "text": "Now someone may argue, “Some people have faith; others have good deeds.” But I say, “[How can you show me your faith if you don’t have good deeds?]{blue} [I will show you my faith by my good deeds.]{gold}”"
+                },
+                {
+                  "number": 19,
+                  "text": "You say you have faith, for you believe that there is one God. Good for you! Even the demons believe this, and they tremble in terror."
+                },
+                {
+                  "number": 20,
+                  "text": "How foolish! [Can’t you see that faith without good deeds is useless?]{blue}"
+                },
+                {
+                  "number": 21,
+                  "text": "Don’t you remember that our ancestor Abraham was shown to be right with God by his actions when he offered his son Isaac on the altar?"
+                },
+                {
+                  "number": 22,
+                  "text": "[You see, his faith and his actions worked together. His actions made his faith complete.]{blue}"
+                },
+                {
+                  "number": 23,
+                  "text": "And so it happened just as the Scriptures say: “Abraham believed God, and God counted him as righteous because of his faith.” He was even called the friend of God."
+                },
+                {
+                  "number": 24,
+                  "text": "[So you see, we are shown to be right with God by what we do, not by faith alone.]{blue}"
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "Dead faith knows the word; living faith acts on the word."
+            },
+            {
+              "type": "note",
+              "text": "To believe His word is to do His word."
+            },
+            {
+              "type": "note",
+              "text": "If you are truly saved by abiding in Christ, you will truly obey."
+            }
+          ]
+        },
+        {
+          "type": "point",
+          "title": "Trust His word even in hard times",
+          "content": [
+            {
+              "type": "verse",
+              "reference": "Psalms 56:3-4",
+              "version": "NIV",
+              "verses": [
+                {
+                  "number": 3,
+                  "text": "[When I am afraid, I put my trust in you.]{blue}"
+                },
+                {
+                  "number": 4,
+                  "text": "In God, whose word I praise—in God I trust and am not afraid. What can mere mortals do to me?"
+                }
+              ]
+            },
+            {
+              "type": "verse",
+              "reference": "Hebrews 3:16-19",
+              "version": "NLT",
+              "verses": [
+                {
+                  "number": 16,
+                  "text": "And who was it who rebelled against God, [even though they heard his voice?]{blue} Wasn’t it the people Moses led out of Egypt?"
+                },
+                {
+                  "number": 17,
+                  "text": "And who made God angry for forty years? [Wasn’t it the people who sinned]{gold}, whose corpses lay in the wilderness?"
+                },
+                {
+                  "number": 18,
+                  "text": "And to whom was God speaking when he took an oath that they would never enter his rest? [Wasn’t it the people who disobeyed him?]{blue}"
+                },
+                {
+                  "number": 19,
+                  "text": "[So we see that because of their unbelief they were not able to enter his rest.]{gold}"
+                }
+              ]
+            },
+            {
+              "type": "note",
+              "text": "If you are truly saved, you will trust and obey His word even in the hardest and most impossible situations."
+            }
+          ]
+        }
+      ]
+    },
+    {
       "slug": "attach-to-christ-daily",
       "title": "Attach to Christ daily",
       "series": "abide",

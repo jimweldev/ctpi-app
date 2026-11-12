@@ -75,6 +75,16 @@ self.addEventListener("install", (event) => {
   self.skipWaiting()
 })
 
+// The app asks for a refresh on each online start, so pages added since
+// install (like new sermons) get cached without a new service worker.
+let lastRefresh = 0
+self.addEventListener("message", (event) => {
+  if (event.data !== "refresh") return
+  if (Date.now() - lastRefresh < 60_000) return
+  lastRefresh = Date.now()
+  event.waitUntil(precache().catch(() => {}))
+})
+
 self.addEventListener("activate", (event) => {
   event.waitUntil(
     caches

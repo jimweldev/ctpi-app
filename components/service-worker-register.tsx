@@ -14,6 +14,10 @@ function ServiceWorkerRegister() {
 
     navigator.serviceWorker
       .register("/sw.js", { scope: "/", updateViaCache: "none" })
+      .then(() => navigator.serviceWorker.ready)
+      .then((registration) => {
+        if (navigator.onLine) registration.active?.postMessage("refresh")
+      })
       .catch((error) => {
         console.error("Service worker registration failed:", error)
       })

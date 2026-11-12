@@ -29,6 +29,10 @@ function extractUrls(html) {
   for (const match of html.matchAll(/\/_next\/image\?[^"\s,]+/g)) {
     urls.add(match[0].replaceAll("&amp;", "&"))
   }
+  // Event images, from the page data (the Events tab is not in the HTML).
+  for (const match of html.matchAll(/\/events\/[\w.-]+\.(?:jpe?g|png|webp)/g)) {
+    urls.add(match[0])
+  }
   for (const match of html.matchAll(/href="(\/sermons\/[^"#?]+)"/g)) {
     urls.add(match[1])
   }
@@ -60,7 +64,9 @@ async function precache() {
     })
   )
 
-  const assets = [...extra].filter((url) => url.startsWith("/_next/"))
+  const assets = [...extra].filter(
+    (url) => url.startsWith("/_next/") || url.startsWith("/events/")
+  )
   await Promise.all(
     assets.map((url) =>
       cache.add(url).catch(() => {
@@ -108,6 +114,14 @@ function putInCache(request, response) {
   return response
 }
 
+// Offline, an optimized image at an uncached size falls back to the cached
+// original (event images are precached that way).
+async function cachedOriginal(url) {
+  const original = url.searchParams.get("url")
+  const cached = original && (await caches.match(original))
+  return cached || Response.error()
+}
+
 self.addEventListener("fetch", (event) => {
   const { request } = event
   if (request.method !== "GET") return
@@ -142,12 +156,13 @@ self.addEventListener("fetch", (event) => {
     /\.(png|jpg|jpeg|svg|webp|ico|woff2?)$/.test(url.pathname)
   ) {
     event.respondWith(
-      caches
-        .match(request)
-        .then(
-          (cached) =>
-            cached || fetch(request).then((r) => putInCache(request, r))
-        )
+      caches.match(request).then(
+        (cached) =>
+          cached ||
+          fetch(request)
+            .then((r) => putInCache(request, r))
+            .catch(() => cachedOriginal(url))
+      )
     )
   }
 })
